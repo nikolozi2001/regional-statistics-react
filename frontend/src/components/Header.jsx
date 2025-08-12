@@ -21,7 +21,7 @@ const Header = () => {
       <div className="max-w-6xl mx-auto px-8 flex items-center justify-between min-h-[80px] flex-col md:flex-row gap-4 md:gap-0">
         <div className="flex-shrink-0 flex items-center order-2 md:order-1">
           <img 
-            src="/geostat-logo.svg" 
+            src={language === 'GE' ? '/src/assets/images/logo_transparency_geo.png' : '/src/assets/images/logo_transparency_eng.png'} 
             alt="GEOSTAT" 
             className="h-15 w-auto object-contain"
           />
@@ -44,25 +44,35 @@ const Header = () => {
         <div className="flex-shrink-0 flex items-center order-3">
           <div className="flex items-center bg-white/10 rounded-3xl p-1 backdrop-blur-sm border border-white/20">
             <button 
-              className={`bg-transparent border-none rounded-2xl px-4 py-2 text-sm font-semibold cursor-pointer transition-all duration-300 font-sans active:scale-95 ${
+              className={`bg-transparent border-none rounded-2xl px-3 py-2 cursor-pointer transition-all duration-300 active:scale-95 flex items-center justify-center ${
                 language === 'GE' 
-                  ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30' 
-                  : 'text-gray-500 hover:text-slate-700 hover:bg-white/80'
+                  ? 'bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30' 
+                  : 'hover:bg-white/80'
               }`}
               onClick={() => language !== 'GE' && toggleLanguage()}
+              title="ქართული"
             >
-              ქარ
+              <img 
+                src="/src/assets/images/ka.png" 
+                alt="Georgian" 
+                className="w-6 h-4 object-cover rounded-sm"
+              />
             </button>
             <span className="text-gray-400 font-light mx-2 select-none">|</span>
             <button 
-              className={`bg-transparent border-none rounded-2xl px-4 py-2 text-sm font-semibold cursor-pointer transition-all duration-300 font-sans active:scale-95 ${
+              className={`bg-transparent border-none rounded-2xl px-3 py-2 cursor-pointer transition-all duration-300 active:scale-95 flex items-center justify-center ${
                 language === 'EN' 
-                  ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30' 
-                  : 'text-gray-500 hover:text-slate-700 hover:bg-white/80'
+                  ? 'bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30' 
+                  : 'hover:bg-white/80'
               }`}
               onClick={() => language !== 'EN' && toggleLanguage()}
+              title="English"
             >
-              ENG
+              <img 
+                src="/src/assets/images/en.png" 
+                alt="English" 
+                className="w-6 h-4 object-cover rounded-sm"
+              />
             </button>
           </div>
         </div>
