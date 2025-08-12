@@ -1,0 +1,28 @@
+{
+  "name": "regional-statistics-react",
+  "version": "1.0.0",
+  "description": "Georgian Regional Statistics Portal - React frontend with Node.js backend",
+  "scripts": {
+    "install-all": "cd frontend && npm install && cd ../backend && npm install",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "start": "concurrently \"cd backend && npm start\" \"cd frontend && npm run preview\"",
+    "build": "cd frontend && npm run build",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev"
+  },
+  "keywords": [
+    "react",
+    "nodejs",
+    "express",
+    "mysql",
+    "statistics",
+    "georgia",
+    "dashboard",
+    "mapping"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

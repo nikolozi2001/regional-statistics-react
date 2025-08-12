@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.dashboard {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+
+  &__content {
+    padding: 2rem 0;
+  }
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+
+    h2 {
+      font-family: 'Noto Sans Georgian', 'Inter', sans-serif;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    p {
+      font-family: 'Noto Sans Georgian', 'Inter', sans-serif;
+      color: #6c757d;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    &__container {
+      padding: 0 1rem;
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+    }
+  }
+}
