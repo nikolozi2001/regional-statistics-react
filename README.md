@@ -114,8 +114,7 @@ regional-statistics-react/
 ├── frontend/                 # React frontend application
 │   ├── src/
 │   │   ├── components/      # Reusable components
-│   │   │   ├── Header.jsx   # Main header with language switcher
-│   │   │   └── Header.scss  # Header styling
+│   │   │   └── Header.jsx   # Main header with language switcher (uses Tailwind CSS)
 │   │   ├── contexts/        # React contexts
 │   │   │   ├── LanguageContext.js   # Context definition
 │   │   │   └── LanguageContext.jsx  # Provider component
