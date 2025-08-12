@@ -12,18 +12,28 @@ const CONTAINER_CLASSES = "w-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center
 const LOGO_CONTAINER_CLASSES = "flex-shrink-0 flex items-center order-2 md:order-1";
 const LOGO_CLASSES = "h-12 sm:h-14 md:h-15 w-auto object-contain transition-all duration-300 ease-in-out animate-fade-in";
 const TITLE_CONTAINER_CLASSES = "flex-1 flex justify-center items-center px-0 md:px-8 order-1 md:order-2";
-const LANGUAGE_CONTAINER_CLASSES = "flex-shrink-0 flex items-center order-3";
-const LANGUAGE_SWITCHER_CLASSES = "flex items-center bg-white/10 rounded-3xl p-1 backdrop-blur-sm border border-white/20 shadow-sm animate-scale-in";
+const RIGHT_SECTION_CLASSES = "flex-shrink-0 flex flex-col items-end gap-3 order-3 md:order-3";
+const LANGUAGE_CONTAINER_CLASSES = "flex items-center";
+const COMPARISON_BUTTONS_CLASSES = "flex flex-col sm:flex-row items-center gap-2";
+const LANGUAGE_SWITCHER_CLASSES = "flex items-center rounded-3xl p-1 backdrop-blur-sm border border-white/20 shadow-sm animate-scale-in";
 const DIVIDER_CLASSES = "text-gray-400 font-light mx-2 select-none";
 const FLAG_CLASSES = "w-6 h-4 object-cover rounded-sm transition-all duration-200 hover:scale-110 group-hover:brightness-110";
+
+const getComparisonButtonClasses = () => `
+  bg-[#f44336] hover:bg-[#d32f2f] 
+  text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg 
+  transition-all duration-300 transform hover:scale-105 active:scale-95
+  focus:outline-none focus:ring-2 focus:ring-[#f44336] focus:ring-offset-2
+  text-sm whitespace-nowrap
+`.trim();
 
 const getButtonClasses = (isActive) => `
   group bg-transparent border-none rounded-2xl px-3 py-2 cursor-pointer 
   transition-all duration-300 active:scale-95 flex items-center justify-center
-  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white
+  focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-white
   disabled:cursor-not-allowed disabled:opacity-100
   ${isActive 
-    ? 'bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30 transform scale-105' 
+    ? 'bg-gradient-to-br from-zinc-500 to-zinc-600 shadow-lg shadow-zinc-500/30 transform scale-105' 
     : 'hover:bg-white/80 hover:shadow-md hover:scale-105'
   }
 `.trim();
@@ -57,11 +67,28 @@ const Header = memo(() => {
     }
   };
 
+  const handleRegionComparison = () => {
+    // TODO: Implement region comparison functionality
+    console.log('Region comparison clicked');
+  };
+
+  const handleMunicipalityComparison = () => {
+    // TODO: Implement municipality comparison functionality
+    console.log('Municipality comparison clicked');
+  };
+
   // Memoized values for performance
   const title = useMemo(() => {
     return language === 'EN' 
       ? 'Statistical Information by Regions and Municipalities of Georgia'
       : 'სტატისტიკური ინფორმაცია საქართველოს რეგიონებისა და მუნიციპალიტეტების მიხედვით';
+  }, [language]);
+
+  const comparisonButtons = useMemo(() => {
+    return {
+      regions: language === 'EN' ? 'Comparison of Regions' : 'რეგიონების შედარება',
+      municipalities: language === 'EN' ? 'Comparison of Municipalities' : 'მუნიციპალიტეტების შედარება'
+    };
   }, [language]);
 
   const currentLogo = useMemo(() => {
@@ -103,52 +130,75 @@ const Header = memo(() => {
           </h1>
         </div>
         
-        {/* Language Switcher Section */}
-        <div className={LANGUAGE_CONTAINER_CLASSES}>
-          <div 
-            className={LANGUAGE_SWITCHER_CLASSES} 
-            role="group" 
-            aria-label="Language selection"
-          >
-            {/* Georgian Language Button */}
-            <button 
-              className={getButtonClasses(language === 'GE')}
-              onClick={() => language !== 'GE' && toggleLanguage()}
-              onKeyDown={(e) => handleKeyPress(e, 'GE')}
-              title="ქართული - Switch to Georgian"
-              aria-label="Switch to Georgian language"
-              aria-pressed={language === 'GE'}
-              disabled={language === 'GE'}
-              tabIndex={0}
+        {/* Right Section: Language Switcher + Comparison Buttons */}
+        <div className={RIGHT_SECTION_CLASSES}>
+          {/* Language Switcher */}
+          <div className={LANGUAGE_CONTAINER_CLASSES}>
+            <div 
+              className={LANGUAGE_SWITCHER_CLASSES} 
+              role="group" 
+              aria-label="Language selection"
             >
-              <img 
-                src={flagGe}
-                alt="Georgian flag" 
-                className={FLAG_CLASSES}
-                loading="eager"
-              />
+              {/* Georgian Language Button */}
+              <button 
+                className={getButtonClasses(language === 'GE')}
+                onClick={() => language !== 'GE' && toggleLanguage()}
+                onKeyDown={(e) => handleKeyPress(e, 'GE')}
+                title="ქართული - Switch to Georgian"
+                aria-label="Switch to Georgian language"
+                aria-pressed={language === 'GE'}
+                disabled={language === 'GE'}
+                tabIndex={0}
+              >
+                <img 
+                  src={flagGe}
+                  alt="Georgian flag" 
+                  className={FLAG_CLASSES}
+                  loading="eager"
+                />
+              </button>
+              
+              {/* Divider */}
+              <span className={DIVIDER_CLASSES} aria-hidden="true">|</span>
+              
+              {/* English Language Button */}
+              <button 
+                className={getButtonClasses(language === 'EN')}
+                onClick={() => language !== 'EN' && toggleLanguage()}
+                onKeyDown={(e) => handleKeyPress(e, 'EN')}
+                title="English - Switch to English"
+                aria-label="Switch to English language"
+                aria-pressed={language === 'EN'}
+                disabled={language === 'EN'}
+                tabIndex={0}
+              >
+                <img 
+                  src={flagEn}
+                  alt="English flag" 
+                  className={FLAG_CLASSES}
+                  loading="eager"
+                />
+              </button>
+            </div>
+          </div>
+          
+          {/* Comparison Buttons */}
+          <div className={COMPARISON_BUTTONS_CLASSES}>
+            <button 
+              className={getComparisonButtonClasses()}
+              onClick={handleRegionComparison}
+              title={comparisonButtons.regions}
+              aria-label={comparisonButtons.regions}
+            >
+              {comparisonButtons.regions}
             </button>
-            
-            {/* Divider */}
-            <span className={DIVIDER_CLASSES} aria-hidden="true">|</span>
-            
-            {/* English Language Button */}
             <button 
-              className={getButtonClasses(language === 'EN')}
-              onClick={() => language !== 'EN' && toggleLanguage()}
-              onKeyDown={(e) => handleKeyPress(e, 'EN')}
-              title="English - Switch to English"
-              aria-label="Switch to English language"
-              aria-pressed={language === 'EN'}
-              disabled={language === 'EN'}
-              tabIndex={0}
+              className={getComparisonButtonClasses()}
+              onClick={handleMunicipalityComparison}
+              title={comparisonButtons.municipalities}
+              aria-label={comparisonButtons.municipalities}
             >
-              <img 
-                src={flagEn}
-                alt="English flag" 
-                className={FLAG_CLASSES}
-                loading="eager"
-              />
+              {comparisonButtons.municipalities}
             </button>
           </div>
         </div>
