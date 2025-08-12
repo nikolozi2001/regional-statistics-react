@@ -1,7 +1,46 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { useLanguage } from '../hooks/useLanguage';
+import logoGeo from '../assets/images/logo_transparency_geo.png';
+import logoEng from '../assets/images/logo_transparency_eng.png';
+import flagGe from '../assets/images/ka.png';
+import flagEn from '../assets/images/en.png';
 
-const Header = () => {
+// Constants for styling
+const HEADER_CLASSES = "bg-white border-b-2 border-gray-300 shadow-lg py-4 sticky top-0 z-[1000]";
+const CONTAINER_CLASSES = "max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-[80px] flex-col md:flex-row gap-4 md:gap-0";
+const LOGO_CONTAINER_CLASSES = "flex-shrink-0 flex items-center order-2 md:order-1";
+const LOGO_CLASSES = "h-12 sm:h-14 md:h-15 w-auto object-contain transition-all duration-300 ease-in-out animate-fade-in";
+const TITLE_CONTAINER_CLASSES = "flex-1 flex justify-center items-center px-0 md:px-8 order-1 md:order-2";
+const LANGUAGE_CONTAINER_CLASSES = "flex-shrink-0 flex items-center order-3";
+const LANGUAGE_SWITCHER_CLASSES = "flex items-center bg-white/10 rounded-3xl p-1 backdrop-blur-sm border border-white/20 shadow-sm animate-scale-in";
+const DIVIDER_CLASSES = "text-gray-400 font-light mx-2 select-none";
+const FLAG_CLASSES = "w-6 h-4 object-cover rounded-sm transition-all duration-200 hover:scale-110 group-hover:brightness-110";
+
+const getButtonClasses = (isActive) => `
+  group bg-transparent border-none rounded-2xl px-3 py-2 cursor-pointer 
+  transition-all duration-300 active:scale-95 flex items-center justify-center
+  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white
+  disabled:cursor-not-allowed disabled:opacity-100
+  ${isActive 
+    ? 'bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30 transform scale-105' 
+    : 'hover:bg-white/80 hover:shadow-md hover:scale-105'
+  }
+`.trim();
+
+const getTitleClasses = (language) => `
+  font-semibold text-slate-700 text-center m-0 leading-relaxed transition-all duration-300 animate-fade-in
+  ${language === 'EN' 
+    ? 'font-inter text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl' 
+    : 'font-georgian text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl'
+  }
+`.trim();
+
+/**
+ * Header component with language switching and responsive design
+ * Features: Dynamic logos, flag-based language switcher, accessibility support
+ */
+const Header = memo(() => {
   const { language, changeLanguage } = useLanguage();
 
   const toggleLanguage = () => {
@@ -9,69 +48,106 @@ const Header = () => {
     changeLanguage(newLanguage);
   };
 
-  const getTitle = () => {
-    if (language === 'EN') {
-      return 'Statistical Information by Regions and Municipalities of Georgia';
+  const handleKeyPress = (event, targetLanguage) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      if (language !== targetLanguage) {
+        toggleLanguage();
+      }
     }
-    return 'სტატისტიკური ინფორმაცია საქართველოს რეგიონებისა და მუნიციპალიტეტების მიხედვით';
   };
 
+  // Memoized values for performance
+  const title = useMemo(() => {
+    return language === 'EN' 
+      ? 'Statistical Information by Regions and Municipalities of Georgia'
+      : 'სტატისტიკური ინფორმაცია საქართველოს რეგიონებისა და მუნიციპალიტეტების მიხედვით';
+  }, [language]);
+
+  const currentLogo = useMemo(() => {
+    return language === 'GE' ? logoGeo : logoEng;
+  }, [language]);
+
+  const logoAlt = useMemo(() => {
+    return `GEOSTAT - ${language === 'GE' ? 'Georgian' : 'English'} Logo`;
+  }, [language]);
+
   return (
-    <header className="bg-white border-b-2 border-gray-300 shadow-lg py-4 sticky top-0 z-[1000]">
-      <div className="max-w-6xl mx-auto px-8 flex items-center justify-between min-h-[80px] flex-col md:flex-row gap-4 md:gap-0">
-        <div className="flex-shrink-0 flex items-center order-2 md:order-1">
+    <header className={HEADER_CLASSES}>
+      {/* Preload images for better performance */}
+      <link rel="preload" as="image" href={logoGeo} />
+      <link rel="preload" as="image" href={logoEng} />
+      <link rel="preload" as="image" href={flagGe} />
+      <link rel="preload" as="image" href={flagEn} />
+      
+      <div className={CONTAINER_CLASSES}>
+        {/* Logo Section */}
+        <div className={LOGO_CONTAINER_CLASSES}>
           <img 
-            src={language === 'GE' ? '/src/assets/images/logo_transparency_geo.png' : '/src/assets/images/logo_transparency_eng.png'} 
-            alt="GEOSTAT" 
-            className="h-15 w-auto object-contain"
+            src={currentLogo}
+            alt={logoAlt}
+            className={LOGO_CLASSES}
+            loading="eager"
+            key={language} // Force re-render for smooth transition
           />
         </div>
         
-        <div className="flex-1 flex justify-center items-center px-0 md:px-8 order-1 md:order-2">
+        {/* Title Section */}
+        <div className={TITLE_CONTAINER_CLASSES}>
           <h1 
             data-lang={language.toLowerCase()}
-            className={`font-semibold text-slate-700 text-center m-0 leading-relaxed transition-all duration-300 ${
-              language === 'EN' 
-                ? 'font-sans text-lg md:text-xl lg:text-2xl' 
-                : 'text-base md:text-lg lg:text-xl'
-            }`}
-            style={{ fontFamily: language === 'EN' ? 'Inter, sans-serif' : 'Noto Sans Georgian, Inter, sans-serif' }}
+            className={getTitleClasses(language)}
+            key={language} // Force re-render for smooth transition
           >
-            {getTitle()}
+            {title}
           </h1>
         </div>
         
-        <div className="flex-shrink-0 flex items-center order-3">
-          <div className="flex items-center bg-white/10 rounded-3xl p-1 backdrop-blur-sm border border-white/20">
+        {/* Language Switcher Section */}
+        <div className={LANGUAGE_CONTAINER_CLASSES}>
+          <div 
+            className={LANGUAGE_SWITCHER_CLASSES} 
+            role="group" 
+            aria-label="Language selection"
+          >
+            {/* Georgian Language Button */}
             <button 
-              className={`bg-transparent border-none rounded-2xl px-3 py-2 cursor-pointer transition-all duration-300 active:scale-95 flex items-center justify-center ${
-                language === 'GE' 
-                  ? 'bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30' 
-                  : 'hover:bg-white/80'
-              }`}
+              className={getButtonClasses(language === 'GE')}
               onClick={() => language !== 'GE' && toggleLanguage()}
-              title="ქართული"
+              onKeyDown={(e) => handleKeyPress(e, 'GE')}
+              title="ქართული - Switch to Georgian"
+              aria-label="Switch to Georgian language"
+              aria-pressed={language === 'GE'}
+              disabled={language === 'GE'}
+              tabIndex={0}
             >
               <img 
-                src="/src/assets/images/ka.png" 
-                alt="Georgian" 
-                className="w-6 h-4 object-cover rounded-sm"
+                src={flagGe}
+                alt="Georgian flag" 
+                className={FLAG_CLASSES}
+                loading="eager"
               />
             </button>
-            <span className="text-gray-400 font-light mx-2 select-none">|</span>
+            
+            {/* Divider */}
+            <span className={DIVIDER_CLASSES} aria-hidden="true">|</span>
+            
+            {/* English Language Button */}
             <button 
-              className={`bg-transparent border-none rounded-2xl px-3 py-2 cursor-pointer transition-all duration-300 active:scale-95 flex items-center justify-center ${
-                language === 'EN' 
-                  ? 'bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30' 
-                  : 'hover:bg-white/80'
-              }`}
+              className={getButtonClasses(language === 'EN')}
               onClick={() => language !== 'EN' && toggleLanguage()}
-              title="English"
+              onKeyDown={(e) => handleKeyPress(e, 'EN')}
+              title="English - Switch to English"
+              aria-label="Switch to English language"
+              aria-pressed={language === 'EN'}
+              disabled={language === 'EN'}
+              tabIndex={0}
             >
               <img 
-                src="/src/assets/images/en.png" 
-                alt="English" 
-                className="w-6 h-4 object-cover rounded-sm"
+                src={flagEn}
+                alt="English flag" 
+                className={FLAG_CLASSES}
+                loading="eager"
               />
             </button>
           </div>
@@ -79,6 +155,13 @@ const Header = () => {
       </div>
     </header>
   );
+});
+
+Header.displayName = 'Header';
+
+// PropTypes for type checking (development only)
+Header.propTypes = {
+  // No props currently, but structure is ready for future props
 };
 
 export default Header;
