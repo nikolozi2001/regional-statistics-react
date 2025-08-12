@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
-import './MainInfo.scss';
 import mapIcon from '../assets/images/map-200-b.png';
 import populationIcon from '../assets/images/population-200-p.png';
 import lineChartIcon from '../assets/images/line-chart-200-r.png';
@@ -73,8 +72,8 @@ const MainInfo = () => {
 
   if (loading) {
     return (
-      <div className="main-info loading">
-        <div className="loading-spinner">
+      <div className="h-full flex items-center justify-center bg-gray-50 border-r border-gray-200">
+        <div className="text-lg text-gray-500 text-center">
           {isEnglish ? 'Loading...' : 'იტვირთება...'}
         </div>
       </div>
@@ -83,8 +82,8 @@ const MainInfo = () => {
 
   if (error) {
     return (
-      <div className="main-info error">
-        <div className="error-message">
+      <div className="h-full flex items-center justify-center bg-gray-50 border-r border-gray-200">
+        <div className="text-base text-red-500 text-center p-4">
           {isEnglish ? 'Error loading data' : 'მონაცემების ჩატვირთვისას შეცდომა'}
         </div>
       </div>
@@ -92,16 +91,20 @@ const MainInfo = () => {
   }
 
   return (
-    <div className="main-info">
-      <div className="main-info__container">
+    <div className="h-full bg-gray-50 border-r border-gray-200 overflow-y-auto">
+      <div className="p-4 md:p-6 flex flex-col gap-3 md:gap-4">
         {mainInfoData.map((item) => (
-          <div key={item.id} className="main-info__item" id={`textbox${item.id}`}>
+          <div 
+            key={item.id} 
+            className="flex items-center p-3 md:p-4 bg-white rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+            id={`textbox${item.id}`}
+          >
             <img 
-              className="main-info__icon" 
+              className="w-8 h-8 md:w-10 md:h-10 mr-2 md:mr-3 flex-shrink-0" 
               src={iconMap[item.id]} 
               alt={isEnglish ? item.title_en : item.title_ge}
             />
-            <span className="main-info__text">
+            <span className="text-xs md:text-sm leading-snug text-gray-800 font-medium">
               {isEnglish ? item.title_en : item.title_ge}: {getDataWithUnit(item)}
             </span>
           </div>
