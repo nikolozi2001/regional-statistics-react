@@ -1,174 +1,217 @@
-# Georgian Regional Statistics Portal
+# Regional Statistics React Application
 
-A React-based web application for displaying regional statistics of Georgia, similar to the National Statistics Office portal. The application features an interactive map, statistical data visualization, and detailed regional information.
+A modern web application for displaying statistical information about Georgia's regions and municipalities, featuring a bilingual interface (Georgian/English) and interactive data visualization.
 
-## Project Structure
+## 🌟 Features
+
+- **Multilingual Support**: Seamless switching between Georgian and English
+- **URL-based Language Routing**: Clean URLs with language prefixes (`/ge`, `/en`)
+- **Responsive Design**: Mobile-first approach with SCSS styling
+- **Modern React Architecture**: Built with React 19, Vite, and modern hooks
+- **Professional UI/UX**: Material-UI components with custom styling
+- **Interactive Components**: Maps, charts, and data visualizations
+- **Backend API**: Node.js/Express server with MySQL integration
+
+## 🚀 Tech Stack
+
+### Frontend
+- **React 19** - Modern UI library
+- **Vite** - Fast build tool and dev server
+- **React Router DOM** - Client-side routing
+- **Material-UI** - Component library
+- **SCSS/Sass** - Advanced CSS preprocessing
+- **Axios** - HTTP client for API calls
+- **Leaflet** - Interactive maps
+- **Recharts** - Data visualization
+
+### Backend
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **MySQL** - Database
+- **Winston** - Logging
+
+## 🛠️ Installation & Setup
+
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
+- MySQL (for backend)
+
+### Quick Start
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/regional-statistics-react.git
+   cd regional-statistics-react
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm run install-all
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp backend/.env.example backend/.env
+   # Edit backend/.env with your database credentials
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Access the application**
+   - Frontend: `http://localhost:5173/`
+   - Backend API: `http://localhost:3001/`
+
+### Individual Setup
+
+#### Frontend Only
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+#### Backend Only
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+## 🌐 Language System
+
+The application supports Georgian and English with automatic URL routing:
+
+- **Georgian (Default)**: `/ge/` - ქართული ინტერფეისი
+- **English**: `/en/` - English interface
+
+### Language Context Usage
+
+```jsx
+import { useLanguage } from './hooks/useLanguage';
+
+function Component() {
+  const { language, changeLanguage, isEnglish } = useLanguage();
+  
+  return (
+    <div>
+      <p>{isEnglish ? 'Hello' : 'გამარჯობა'}</p>
+      <button onClick={() => changeLanguage('EN')}>
+        Switch to English
+      </button>
+    </div>
+  );
+}
+```
+
+## 📁 Project Structure
 
 ```
 regional-statistics-react/
-├── frontend/          # React Vite frontend
+├── frontend/                 # React frontend application
 │   ├── src/
-│   │   ├── components/    # Reusable components
-│   │   ├── pages/         # Page components
-│   │   └── services/      # API services
-│   └── ...
-└── backend/           # Node.js Express backend
-    ├── server.js      # Main server file
-    ├── database.sql   # Database schema
-    └── ...
+│   │   ├── components/      # Reusable components
+│   │   │   ├── Header.jsx   # Main header with language switcher
+│   │   │   └── Header.scss  # Header styling
+│   │   ├── contexts/        # React contexts
+│   │   │   ├── LanguageContext.js   # Context definition
+│   │   │   └── LanguageContext.jsx  # Provider component
+│   │   ├── hooks/           # Custom hooks
+│   │   │   └── useLanguage.js       # Language hook
+│   │   ├── pages/           # Page components
+│   │   │   ├── Dashboard.jsx        # Main dashboard
+│   │   │   └── Dashboard.scss       # Dashboard styling
+│   │   └── services/        # API services
+│   │       └── api.js       # API client
+│   ├── public/              # Static assets
+│   │   └── geostat-logo.svg # GEOSTAT logo
+│   └── package.json
+├── backend/                  # Node.js backend
+│   ├── controllers/         # Route controllers
+│   ├── middleware/          # Express middleware
+│   ├── routes/              # API routes
+│   └── package.json
+└── package.json             # Root package.json
 ```
 
-## Features
+## 🎨 Styling & Design
 
-- **Interactive Map**: Clickable Georgian regions map with color-coded visualization
-- **Statistics Dashboard**: Key statistics including population, area, GDP growth, unemployment, etc.
-- **Regional Details**: Detailed view for each region
-- **Responsive Design**: Mobile-friendly interface using Material-UI
-- **Bilingual Support**: Georgian and English language support
-- **MySQL Database**: Backend with structured regional data
+### SCSS Architecture
+- **Component-based styling**: Each component has its own SCSS file
+- **Responsive design**: Mobile-first approach with breakpoints
+- **Typography**: Georgian (Noto Sans Georgian) and English (Inter) fonts
+- **Color scheme**: Professional blue gradient with Material Design principles
 
-## Technologies Used
+### Header Design
+- **Left**: GEOSTAT logo
+- **Center**: Bilingual title
+- **Right**: Language switcher (ქარ | ENG)
 
-### Frontend
-- React 18 with Vite
-- Material-UI (MUI) for UI components
-- React Router for navigation
-- Leaflet/React-Leaflet for mapping
-- Axios for API calls
-- Styled Components for custom styling
+## 🔧 Available Scripts
 
-### Backend
-- Node.js with Express
-- MySQL2 for database connectivity
-- CORS for cross-origin requests
-- dotenv for environment configuration
-
-## Setup Instructions
-
-### Prerequisites
-- Node.js (v16 or higher)
-- MySQL Server
-- Git
-
-### Database Setup
-
-1. Install and start MySQL server
-2. Create the database and tables:
-   ```sql
-   -- Run the commands from backend/database.sql
-   mysql -u root -p < backend/database.sql
-   ```
-
-### Backend Setup
-
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Configure environment variables:
-   ```bash
-   # Copy .env file and update with your MySQL credentials
-   cp .env.example .env
-   # Edit .env file with your database credentials
-   ```
-
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-The backend will run on `http://localhost:5000`
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-The frontend will run on `http://localhost:5173`
-
-## API Endpoints
-
-- `GET /api/test` - Test API connection
-- `GET /api/regions` - Get all regions
-- `GET /api/regions/:id/statistics` - Get statistics for a specific region
-- `GET /api/statistics` - Get all statistics with region names
-
-## Environment Variables
-
-### Backend (.env)
-```
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_password_here
-DB_NAME=regional_statistics
-PORT=5000
-```
-
-## Available Scripts
+### Root Level
+- `npm run install-all` - Install all dependencies
+- `npm run dev` - Start both frontend and backend
+- `npm run build` - Build frontend for production
+- `npm run frontend` - Start frontend only
+- `npm run backend` - Start backend only
 
 ### Frontend
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
 ### Backend
-- `npm run dev` - Start development server with nodemon
+- `npm run dev` - Start with nodemon
 - `npm start` - Start production server
 
-## Data Structure
+## 🌍 Deployment
 
-The application displays the following regional statistics:
-- Population count
-- Area in square kilometers
-- GDP growth rate
-- Unemployment rate
-- Agriculture percentage
-- Urban population percentage
-- Number of registered enterprises
+### Frontend (Netlify/Vercel)
+```bash
+cd frontend
+npm run build
+# Deploy the dist/ folder
+```
 
-## Contributing
+### Backend (Railway/Render)
+```bash
+cd backend
+# Set environment variables
+# Deploy with your preferred service
+```
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
+2. Create a feature branch: `git checkout -b feature/new-feature`
+3. Commit changes: `git commit -m 'Add new feature'`
+4. Push to the branch: `git push origin feature/new-feature`
 5. Submit a pull request
 
-## License
+## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Screenshots
+## 🙋‍♂️ Support
 
-The application recreates the visual style of the Georgian National Statistics Office portal with:
-- Georgian map visualization
-- Statistical indicators in Georgian language
-- Government color scheme and branding
-- Responsive grid layout for statistics
+For support, please open an issue in the GitHub repository or contact the development team.
 
-## Future Enhancements
+## 🔮 Roadmap
 
-- Real-time data updates
-- Advanced filtering and sorting
-- Data export functionality
-- Historical data visualization
-- Multi-language support expansion
-- Advanced mapping features with GeoJSON
+- [ ] Interactive map with region selection
+- [ ] Data visualization charts
+- [ ] Export functionality (PDF, Excel)
+- [ ] User authentication
+- [ ] Admin dashboard
+- [ ] API documentation
+- [ ] Unit and integration tests
+- [ ] Docker containerization
+
+---
+
+**Built with ❤️ for Georgia's digital transformation**
