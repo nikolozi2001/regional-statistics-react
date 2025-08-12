@@ -63,6 +63,7 @@ app.use(errorHandler);
 // Graceful shutdown
 const gracefulShutdown = (signal) => {
   logger.info(`Received ${signal}. Starting graceful shutdown...`);
+  
   process.exit(0);
 };
 
@@ -89,3 +90,41 @@ app.listen(PORT, '0.0.0.0', () => {
 });
 
 module.exports = app;
+  
+  console.log(`GET /api/mainInfo - Language: ${lang}`);
+  
+  const query = `SELECT id, title_ge, title_en, data, tooltip_ge, tooltip_en FROM main_info`;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching main info:', err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    
+    // Transform the data to use the appropriate language title
+    const transformedRows = results.map(row => ({
+      id: row.id,
+      title: row[titleColumn] || row.title_ge || row.title_en || 'No title available',
+      title_ge: row.title_ge,
+      title_en: row.title_en,
+      data: row.data,
+      tooltip_ge: row.tooltip_ge,
+      tooltip_en: row.tooltip_en
+    }));
+
+    console.log(`Successfully retrieved ${results.length} main_info records for language: ${lang}`);
+    
+    res.status(200).json({
+      success: true,
+      language: lang,
+      count: transformedRows.length,
+      data: transformedRows
+    });
+  });
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`API available at: http://192.168.1.27:${PORT}/api/test`);
+});

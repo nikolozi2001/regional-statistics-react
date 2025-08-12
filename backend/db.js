@@ -31,6 +31,4 @@ pool.getConnection()
     logger.error("Stack trace: ", err.stack);
   });
 
-module.exports = {
-  pool
-};
+module.exports = pool;

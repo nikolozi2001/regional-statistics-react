@@ -3,19 +3,29 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:api": "bash test-api.sh",
+    "lint": "echo \"No linting configured yet\"",
+    "db:migrate": "echo \"Database migrations not implemented yet\"",
+    "logs": "tail -f combined.log"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv-safe": "^9.1.0",
     "express": "^4.21.2",
+    "express-rate-limit": "^8.0.1",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.3.0",
     "winston": "^3.17.0"
   },

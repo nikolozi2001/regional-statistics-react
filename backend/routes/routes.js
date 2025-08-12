@@ -1,40 +1,39 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
 const router = express.Router();
 
+// Import controllers
 const regionsController = require("../controllers/regionsController");
 const indicatorsController = require("../controllers/indicatorsController");
 const indicatorsEnController = require("../controllers/indicatorsEnController");
 const mainInfoController = require("../controllers/mainInfoController");
+const { healthCheck } = require("../controllers/healthController");
 
-// Root API route
-router.get("/", (req, res) => {
-  const readmePath = path.join(__dirname, "../README.md");
-  fs.readFile(readmePath, "utf8", (err, data) => {
-    if (err) {
-      res.status(500).send("Error reading README.md");
-    } else {
-      res.type("text/plain").send(data);
-    }
+// Import validation middleware
+const { validateRegionId, validateLanguage } = require("../middleware/validate");
+
+// Health and status routes
+router.get("/health", healthCheck);
+router.get("/test", (req, res) => {
+  res.status(200).json({ 
+    success: true,
+    message: "API connection successful",
+    timestamp: new Date().toISOString()
   });
 });
 
-// Health check route (redundant but helpful)
-router.get("/health", (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'API is running' });
-});
-
-// Regions routes
-router.get("/regions/:id", regionsController.getRegionById);
+// Regions routes with validation
 router.get("/regions", regionsController.getAllRegions);
+router.get("/regions/:id", validateRegionId, regionsController.getRegionById);
+router.get("/regions/:id/statistics", validateRegionId, regionsController.getRegionStatistics);
+
+// Statistics routes
+router.get("/statistics", regionsController.getAllStatistics);
+
+// Indicators routes
 router.get("/indicators/:row", indicatorsController.getIndicatorRow);
 router.get("/indicatorsEn/:row", indicatorsEnController.getIndicatorRowEn);
-router.get("/mainInfo", mainInfoController.getMainInfo);
 
-// Debug route to test API connection
-router.get("/test", (req, res) => {
-  res.status(200).json({ message: "API connection successful" });
-});
+// Main info routes with language validation
+router.get("/mainInfo", validateLanguage, mainInfoController.getMainInfo);
 
 module.exports = router;
