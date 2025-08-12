@@ -13,6 +13,8 @@ const MainInfo = () => {
   const [mainInfoData, setMainInfoData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hoveredItem, setHoveredItem] = useState(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
   // Icon mapping based on the ID from the API
   const iconMap = {
@@ -38,6 +40,39 @@ const MainInfo = () => {
         return item.data;
       default:
         return item.data;
+    }
+  };
+
+  // Get tooltip text based on language
+  const getTooltipText = (item) => {
+    const tooltip = isEnglish ? item.tooltip_en : item.tooltip_ge;
+    return tooltip || null;
+  };
+
+  // Handle mouse enter for tooltip
+  const handleMouseEnter = (item, event) => {
+    const tooltip = getTooltipText(item);
+    if (tooltip) {
+      setHoveredItem(item);
+      setTooltipPosition({
+        x: event.clientX,
+        y: event.clientY
+      });
+    }
+  };
+
+  // Handle mouse leave for tooltip
+  const handleMouseLeave = () => {
+    setHoveredItem(null);
+  };
+
+  // Handle mouse move for tooltip positioning
+  const handleMouseMove = (event) => {
+    if (hoveredItem) {
+      setTooltipPosition({
+        x: event.clientX,
+        y: event.clientY
+      });
     }
   };
 
@@ -91,13 +126,16 @@ const MainInfo = () => {
   }
 
   return (
-    <div className="h-full bg-gray-50 border-r border-gray-200 overflow-y-auto">
+    <div className="h-full bg-gray-50 border-r border-gray-200 overflow-y-auto relative">
       <div className="p-4 md:p-6 flex flex-col gap-3 md:gap-4">
         {mainInfoData.map((item) => (
           <div 
             key={item.id} 
-            className="flex items-center p-3 md:p-4 bg-white rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+            className="flex items-center p-3 md:p-4 bg-white rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
             id={`textbox${item.id}`}
+            onMouseEnter={(e) => handleMouseEnter(item, e)}
+            onMouseLeave={handleMouseLeave}
+            onMouseMove={handleMouseMove}
           >
             <img 
               className="w-8 h-8 md:w-10 md:h-10 mr-2 md:mr-3 flex-shrink-0" 
@@ -110,6 +148,21 @@ const MainInfo = () => {
           </div>
         ))}
       </div>
+
+      {/* Tooltip */}
+      {hoveredItem && getTooltipText(hoveredItem) && (
+        <div 
+          className="fixed z-50 bg-gray-800 text-white text-xs px-3 py-2 rounded-lg shadow-lg max-w-xs pointer-events-none"
+          style={{
+            left: `${tooltipPosition.x + 10}px`,
+            top: `${tooltipPosition.y - 35}px`,
+            transform: tooltipPosition.x > window.innerWidth - 200 ? 'translateX(-100%)' : 'none'
+          }}
+        >
+          {getTooltipText(hoveredItem)}
+          <div className="absolute -bottom-1 left-4 w-2 h-2 bg-gray-800 transform rotate-45"></div>
+        </div>
+      )}
     </div>
   );
 };

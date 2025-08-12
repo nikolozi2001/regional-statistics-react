@@ -9,7 +9,7 @@ const getMainInfo = async (req, res) => {
   
   try {
     // Query the main_info table - match actual table structure
-    const query = `SELECT id, title_ge, title_en, data FROM main_info`;
+    const query = `SELECT id, title_ge, title_en, data, tooltip_ge, tooltip_en FROM main_info`;
     const [rows] = await pool.execute(query);
 
     // Transform the data to use the appropriate language title
@@ -18,7 +18,9 @@ const getMainInfo = async (req, res) => {
       title: row[titleColumn] || row.title_ge || row.title_en || 'No title available',
       title_ge: row.title_ge,
       title_en: row.title_en,
-      data: row.data
+      data: row.data,
+      tooltip_ge: row.tooltip_ge,
+      tooltip_en: row.tooltip_en
     }));
 
     logger.info(`Successfully retrieved ${rows.length} main_info records for language: ${lang}`);
@@ -32,7 +34,7 @@ const getMainInfo = async (req, res) => {
     });
   } catch (err) {
     logger.error(`Error in getMainInfo: ${err.message}`);
-    logger.error(`Query attempted: SELECT id, title_ge, title_en, data FROM main_info`);
+    logger.error(`Query attempted: SELECT id, title_ge, title_en, data, tooltip_ge, tooltip_en FROM main_info`);
     logger.error(`Language requested: ${lang}`);
     logger.error(err);
     res.status(500).json({ 

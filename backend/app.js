@@ -100,7 +100,7 @@ app.get('/api/mainInfo', (req, res) => {
   
   console.log(`GET /api/mainInfo - Language: ${lang}`);
   
-  const query = `SELECT id, title_ge, title_en, data FROM main_info`;
+  const query = `SELECT id, title_ge, title_en, data, tooltip_ge, tooltip_en FROM main_info`;
   
   db.query(query, (err, results) => {
     if (err) {
@@ -115,7 +115,9 @@ app.get('/api/mainInfo', (req, res) => {
       title: row[titleColumn] || row.title_ge || row.title_en || 'No title available',
       title_ge: row.title_ge,
       title_en: row.title_en,
-      data: row.data
+      data: row.data,
+      tooltip_ge: row.tooltip_ge,
+      tooltip_en: row.tooltip_en
     }));
 
     console.log(`Successfully retrieved ${results.length} main_info records for language: ${lang}`);
