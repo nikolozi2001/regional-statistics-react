@@ -1,0 +1,114 @@
+import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../hooks/useLanguage';
+import './MainInfo.scss';
+import mapIcon from '../assets/images/map-200-b.png';
+import populationIcon from '../assets/images/population-200-p.png';
+import lineChartIcon from '../assets/images/line-chart-200-r.png';
+import userIcon from '../assets/images/user-200-y.png';
+import areaChartIcon from '../assets/images/area-chart-200-g.png';
+import pieChartIcon from '../assets/images/pie-chart-200-b.png';
+import suitcaseIcon from '../assets/images/suitcase-200-p.png';
+
+const MainInfo = () => {
+  const { isEnglish } = useLanguage();
+  const [mainInfoData, setMainInfoData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Icon mapping based on the ID from the API
+  const iconMap = {
+    1: mapIcon,        // ფართობი / Area
+    2: populationIcon, // მოსახლეობა / Population
+    3: lineChartIcon,  // მშპ-ს რეალური ზრდა / GDP Real Growth Rate
+    4: userIcon,       // მშპ ერთ სულ მოსახლეზე / GDP Per Capita
+    5: areaChartIcon,  // ინფლაცია / Inflation
+    6: pieChartIcon,   // უმუშევრობის დონე / Unemployment Rate
+    7: suitcaseIcon,   // რეგისტრირებული ეკონომიკური სუბიექტები / Business Entities
+  };
+
+  // Unit mapping for different data types
+  const getDataWithUnit = (item) => {
+    switch (item.id) {
+      case 1: // Area
+        return `${item.data} ${isEnglish ? 'sq. km' : 'კვ. კმ'}`;
+      case 2: // Population
+        return `${item.data} ${isEnglish ? 'thousand' : 'ათასი'}`;
+      case 4: // GDP Per Capita
+        return `${item.data} ${isEnglish ? 'USD' : 'აშშ დოლარი'}`;
+      case 7: // Business Entities
+        return item.data;
+      default:
+        return item.data;
+    }
+  };
+
+  useEffect(() => {
+    const fetchMainInfo = async () => {
+      try {
+        setLoading(true);
+        const language = isEnglish ? 'en' : 'ge';
+        const response = await fetch(`http://192.168.1.27:8080/api/mainInfo?language=${language}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch main info data');
+        }
+        
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          setMainInfoData(result.data);
+        } else {
+          throw new Error('Invalid data format');
+        }
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching main info:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMainInfo();
+  }, [isEnglish]);
+
+  if (loading) {
+    return (
+      <div className="main-info loading">
+        <div className="loading-spinner">
+          {isEnglish ? 'Loading...' : 'იტვირთება...'}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="main-info error">
+        <div className="error-message">
+          {isEnglish ? 'Error loading data' : 'მონაცემების ჩატვირთვისას შეცდომა'}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="main-info">
+      <div className="main-info__container">
+        {mainInfoData.map((item) => (
+          <div key={item.id} className="main-info__item" id={`textbox${item.id}`}>
+            <img 
+              className="main-info__icon" 
+              src={iconMap[item.id]} 
+              alt={isEnglish ? item.title_en : item.title_ge}
+            />
+            <span className="main-info__text">
+              {isEnglish ? item.title_en : item.title_ge}: {getDataWithUnit(item)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default MainInfo;

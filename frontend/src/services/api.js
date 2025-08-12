@@ -19,6 +19,13 @@ export const apiService = {
 
   // Statistics
   getAllStatistics: () => api.get('/statistics'),
+  
+  // Main Info
+  getMainInfo: (language = 'ge') => {
+    const baseURL = 'http://192.168.1.27:8080/api';
+    return fetch(`${baseURL}/mainInfo?language=${language}`)
+      .then(response => response.json());
+  },
 };
 
 export default api;
