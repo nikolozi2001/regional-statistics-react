@@ -146,10 +146,14 @@ const MainInfo = () => {
               src={iconMap[item.id]}
               alt={isEnglish ? item.title_en : item.title_ge}
             />
-            <span className="text-xs md:text-sm leading-snug text-gray-800 font-bold">
-              {isEnglish ? item.title_en : item.title_ge}:{" "}
-              {getDataWithUnit(item)}
-            </span>
+            <div className="flex flex-col gap-1 min-w-0 flex-1">
+              <div className="text-xs md:text-sm text-gray-700 font-bold leading-tight">
+                {isEnglish ? item.title_en : item.title_ge}:
+              </div>
+              <div className="text-xs md:text-sm text-gray-800 font-bold leading-tight break-words">
+                {getDataWithUnit(item)}
+              </div>
+            </div>
           </div>
         ))}
       </div>
