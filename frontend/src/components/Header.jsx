@@ -7,8 +7,8 @@ import flagGe from '../assets/images/ka.png';
 import flagEn from '../assets/images/en.png';
 
 // Constants for styling
-const HEADER_CLASSES = "bg-white border-b-2 border-gray-300 shadow-lg py-4 sticky top-0 z-[1000]";
-const CONTAINER_CLASSES = "max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-[80px] flex-col md:flex-row gap-4 md:gap-0";
+const HEADER_CLASSES = "w-full bg-white border-b-2 border-gray-300 shadow-lg py-4 sticky top-0 z-[1000]";
+const CONTAINER_CLASSES = "w-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-[80px] flex-col md:flex-row gap-4 md:gap-0";
 const LOGO_CONTAINER_CLASSES = "flex-shrink-0 flex items-center order-2 md:order-1";
 const LOGO_CLASSES = "h-12 sm:h-14 md:h-15 w-auto object-contain transition-all duration-300 ease-in-out animate-fade-in";
 const TITLE_CONTAINER_CLASSES = "flex-1 flex justify-center items-center px-0 md:px-8 order-1 md:order-2";
@@ -32,7 +32,7 @@ const getTitleClasses = (language) => `
   font-semibold text-slate-700 text-center m-0 leading-relaxed transition-all duration-300 animate-fade-in
   ${language === 'EN' 
     ? 'font-inter text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl' 
-    : 'font-georgian text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl'
+    : 'font-georgian text-xs sm:text-sm md:text-base lg:text-lg xl:text-2xl'
   }
 `.trim();
 
