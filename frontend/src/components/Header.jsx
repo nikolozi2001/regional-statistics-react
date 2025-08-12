@@ -101,12 +101,6 @@ const Header = memo(() => {
 
   return (
     <header className={HEADER_CLASSES}>
-      {/* Preload images for better performance */}
-      <link rel="preload" as="image" href={logoGeo} />
-      <link rel="preload" as="image" href={logoEng} />
-      <link rel="preload" as="image" href={flagGe} />
-      <link rel="preload" as="image" href={flagEn} />
-      
       <div className={CONTAINER_CLASSES}>
         {/* Logo Section */}
         <div className={LOGO_CONTAINER_CLASSES}>
