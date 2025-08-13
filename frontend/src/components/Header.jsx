@@ -1,5 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
 import logoGeo from '../assets/images/logo_transparency_geo.png';
 import logoEng from '../assets/images/logo_transparency_eng.png';
@@ -52,6 +53,11 @@ const getTitleClasses = (language) => `
  */
 const Header = memo(({ showBackButton = false, onBackClick = null, regionColor = "#6b7280" }) => {
   const { language, changeLanguage } = useLanguage();
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
 
   const toggleLanguage = () => {
     const newLanguage = language === 'GE' ? 'EN' : 'GE';
@@ -111,9 +117,10 @@ const Header = memo(({ showBackButton = false, onBackClick = null, regionColor =
           <img 
             src={currentLogo}
             alt={logoAlt}
-            className={LOGO_CLASSES}
+            className={`${LOGO_CLASSES} cursor-pointer hover:opacity-80 transition-opacity`}
             loading="eager"
             key={language} // Force re-render for smooth transition
+            onClick={handleLogoClick}
           />
           {showBackButton && onBackClick && (
             <button

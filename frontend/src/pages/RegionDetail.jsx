@@ -107,12 +107,57 @@ const RegionDetail = () => {
   const navigate = useNavigate();
   const { isEnglish } = useLanguage();
   const [regionSvgContent, setRegionSvgContent] = useState(null);
+  const [municipalNames, setMunicipalNames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Get region data from ID
   const regionCode = regionIdMap[id];
   const region = regionCode ? regionData[regionCode] : null;
+
+  // Municipal name extraction helper function
+  const extractMunicipalNames = (svgDoc, regionCode) => {
+    const municipalities = [];
+
+    // Map region codes to their municipal key prefixes
+    const regionPrefixMap = {
+      "GE-AB": "ABKHAZIA",
+      "GE-SZ": "SAMEGRELO",
+      "GE-GU": "GURIA",
+      "GE-AJ": "ADJARA",
+      "GE-SJ": "SAMTSKHE",
+      "GE-IM": "IMERETI",
+      "GE-RL": "RACHA",
+      "GE-KK": "KVEMO",
+      "GE-KA": "KAKHETI",
+      "GE-TB": "TBILISI",
+      "GE-MM": "MTSKHETA",
+      "GE-SK": "SHIDA",
+      "GE-TS": "TSKHINVALI",
+    };
+
+    const prefix = regionPrefixMap[regionCode];
+    if (!prefix) return municipalities;
+
+    // Find all tspan elements with Key attributes starting with the region prefix
+    const tspans = svgDoc.querySelectorAll(`tspan[Key^="${prefix}_"]`);
+
+    tspans.forEach((tspan) => {
+      const key = tspan.getAttribute("Key");
+      const georgianName = tspan.textContent;
+
+      // Extract municipal name from key (remove prefix)
+      const municipalKey = key.replace(`${prefix}_`, "");
+
+      municipalities.push({
+        key: municipalKey,
+        nameGe: georgianName,
+        nameEn: municipalKey.toLowerCase().replace(/_/g, " "),
+      });
+    });
+
+    return municipalities;
+  };
 
   // Get region name based on language
   const regionName = region
@@ -145,8 +190,47 @@ const RegionDetail = () => {
           const viewBox =
             originalSvg.getAttribute("viewBox") || "0 0 1000 1000";
 
+          // Extract municipal names for this region
+          const municipalities = extractMunicipalNames(svgDoc, regionCode);
+          setMunicipalNames(municipalities);
+
+          // Get municipal text elements for this region
+          const regionPrefixMap = {
+            "GE-AB": "ABKHAZIA",
+            "GE-SZ": "SAMEGRELO",
+            "GE-GU": "GURIA",
+            "GE-AJ": "ADJARA",
+            "GE-SJ": "SAMTSKHE",
+            "GE-IM": "IMERETI",
+            "GE-RL": "RACHA",
+            "GE-KK": "KVEMO",
+            "GE-KA": "KAKHETI",
+            "GE-TB": "TBILISI",
+            "GE-MM": "MTSKHETA",
+            "GE-SK": "SHIDA",
+            "GE-TS": "TSKHINVALI",
+          };
+
+          const prefix = regionPrefixMap[regionCode];
+          let municipalTexts = "";
+
+          if (prefix) {
+            const textElements = svgDoc.querySelectorAll(`text`);
+            textElements.forEach((textEl) => {
+              const tspan = textEl.querySelector(`tspan[Key^="${prefix}_"]`);
+              if (tspan) {
+                const clonedText = textEl.cloneNode(true);
+                municipalTexts += clonedText.outerHTML;
+              }
+            });
+          }
+
           // Get region-specific transform data
-          const transform = regionTransforms[regionCode] || { scale: 5.0, originX: 500, originY: 500 };
+          const transform = regionTransforms[regionCode] || {
+            scale: 5.0,
+            originX: 500,
+            originY: 500,
+          };
 
           // Create a new SVG with just the region path
           const regionSvg = `
@@ -164,11 +248,24 @@ const RegionDetail = () => {
                 .region-path:hover {
                   filter: brightness(1.1);
                 }
+                  text {
+                  transform: scale(${transform.scale - 3.8});
+                  -webkit-transform-origin-x: ${transform.originX}px;
+                  -webkit-transform-origin-y: ${transform.originY}px;
+                  font-family: Arial, sans-serif;
+                  fill: #2d3748;
+                  font-weight: bold;
+                  text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+                }
+                tspan {
+                  font-size: 29px !important;
+                }
               </style>
               ${regionPath.outerHTML.replace(
                 /class="[^"]*"/,
                 'class="region-path"'
               )}
+              ${municipalTexts}
             </svg>
           `;
 
@@ -357,12 +454,26 @@ const RegionDetail = () => {
                   <p className="text-sm text-purple-600 mb-1">
                     {isEnglish === "EN" ? "Municipalities" : "მუნიციპალიტეტები"}
                   </p>
-                  <p className="text-lg font-bold text-purple-900">-</p>
-                  <p className="text-xs text-purple-700">
-                    {isEnglish === "EN"
-                      ? "Data pending"
-                      : "მონაცემები მომზადდება"}
+                  <p className="text-lg font-bold text-purple-900">
+                    {municipalNames.length}
                   </p>
+                  <div className="text-xs text-purple-700 max-h-32 overflow-y-auto">
+                    {municipalNames.length > 0 ? (
+                      <ul className="mt-2 space-y-1">
+                        {municipalNames.map((municipality, index) => (
+                          <li key={index} className="text-xs">
+                            {isEnglish === "EN"
+                              ? municipality.nameEn
+                              : municipality.nameGe}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>
+                        {isEnglish === "EN" ? "Loading..." : "იტვირთება..."}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="mt-6 p-3 bg-gray-100 rounded">

@@ -134,22 +134,22 @@
                </text>
             </g>
             <g id="textgroup4" opacity="0" font-size="10px">
-               <text id="text17483" transform="scale(1 -.99999)" y="-411" x="455">
+               <text id="text17483" transform="scale(2)" y="458" x="568">
                   <tspan id="tspan17485" class="tr" Key="ADJARA_KOBULETI">ქობულეთი</tspan>
                </text>
-               <text id="text17391" transform="scale(1 -.99999)" y="-360" x="479">
+               <text id="text17391" transform="scale(2)" y="705" x="645">
                   <tspan id="tspan17393" class="tr" Key="ADJARA_KEDA">ქედა</tspan>
                </text>
-               <text id="text17479" transform="scale(1 -.99999)" y="-344" x="528">
+               <text id="text17479" transform="scale(2)" y="744" x="891">
                   <tspan id="tspan17481" class="tr" Key="ADJARA_SHUAKHEVI">შუახევი</tspan>
                </text>
-               <text id="text17375" transform="scale(1 -.99999)" y="-376" x="575">
+               <text id="text17375" transform="scale(2)" y="656" x="1119">
                   <tspan id="tspan17377" class="tr" Key="ADJARA_KHULO">ხულო</tspan>
                </text>
-               <text id="text17535" y="-342" x="399" transform="scale(1 -.99999)">
+               <text id="text17535" y="759" x="299" transform="scale(2)">
                   <tspan id="tspan17537" class="tr" Key="ADJARA_KHELVACHAURI">ხელვაჩაური</tspan>
                </text>
-               <text id="text17536" y="-367" x="403" transform="scale(1 -.99999)">
+               <text id="text17536" y="648" x="230" transform="scale(2)">
                   <tspan id="tspan17538" class="tr" Key="ADJARA_BATUMI">ბათუმი</tspan>
                </text>
             </g>
