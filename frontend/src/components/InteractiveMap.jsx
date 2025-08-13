@@ -183,24 +183,6 @@ const InteractiveMap = () => {
             #georgia-map-container svg path.zoomed + .region-label {
               opacity: 1 !important;
             }
-            .map-tooltip {
-              position: fixed;
-              padding: 10px 14px;
-              background: rgba(55, 200, 245, 0.95);
-              color: white;
-              border-radius: 6px;
-              font-size: 14px;
-              font-weight: 500;
-              pointer-events: none;
-              opacity: 0;
-              transition: opacity 0.2s ease;
-              z-index: 1000;
-              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-              backdrop-filter: blur(10px);
-            }
-            .map-tooltip.visible {
-              opacity: 1;
-            }
             
             /* Responsive adjustments */
             @media (max-width: 768px) {
@@ -213,29 +195,16 @@ const InteractiveMap = () => {
               #georgia-map-container svg .region-label {
                 font-size: 10px !important;
               }
-              .map-tooltip {
-                font-size: 12px;
-                padding: 8px 10px;
-              }
             }
             
             @media (max-width: 480px) {
               #georgia-map-container svg .region-label {
                 font-size: 9px !important;
               }
-              .map-tooltip {
-                font-size: 11px;
-                padding: 6px 8px;
-              }
             }
           `;
 
           svgElement.appendChild(style);
-
-          // Create tooltip element
-          const tooltip = document.createElement("div");
-          tooltip.className = "map-tooltip";
-          document.body.appendChild(tooltip);
 
           // Apply colors to regions and add event listeners
           const paths = svgElement.querySelectorAll("path");
@@ -268,27 +237,6 @@ const InteractiveMap = () => {
                 isEnglish === "GE"
                   ? regionData[id].nameGe
                   : regionData[id].nameEn;
-
-              // Update tooltip content and position on hover
-              const showTooltip = (event) => {
-                tooltip.textContent =
-                  isEnglish === "GE"
-                    ? regionData[id].nameGe
-                    : regionData[id].nameEn;
-                tooltip.style.left = event.pageX + "px";
-                tooltip.style.top = event.pageY - 10 + "px";
-                tooltip.classList.add("visible");
-              };
-
-              const hideTooltip = () => {
-                tooltip.classList.remove("visible");
-              };
-
-              // Add hover events to both path and label
-              path.addEventListener("mousemove", showTooltip);
-              path.addEventListener("mouseleave", hideTooltip);
-              label.addEventListener("mousemove", showTooltip);
-              label.addEventListener("mouseleave", hideTooltip);
 
               path.parentNode.insertBefore(label, path.nextSibling);
 

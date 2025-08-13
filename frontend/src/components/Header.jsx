@@ -48,9 +48,9 @@ const getTitleClasses = (language) => `
 
 /**
  * Header component with language switching and responsive design
- * Features: Dynamic logos, flag-based language switcher, accessibility support
+ * Features: Dynamic logos, flag-based language switcher, accessibility support, optional back button
  */
-const Header = memo(() => {
+const Header = memo(({ showBackButton = false, onBackClick = null, regionColor = "#6b7280" }) => {
   const { language, changeLanguage } = useLanguage();
 
   const toggleLanguage = () => {
@@ -91,6 +91,10 @@ const Header = memo(() => {
     };
   }, [language]);
 
+  const backButtonText = useMemo(() => {
+    return language === 'EN' ? 'Back to Map' : 'უკან რუკაზე';
+  }, [language]);
+
   const currentLogo = useMemo(() => {
     return language === 'GE' ? logoGeo : logoEng;
   }, [language]);
@@ -102,8 +106,8 @@ const Header = memo(() => {
   return (
     <header className={HEADER_CLASSES}>
       <div className={CONTAINER_CLASSES}>
-        {/* Logo Section */}
-        <div className={LOGO_CONTAINER_CLASSES}>
+        {/* Logo Section with optional Back Button */}
+        <div className="flex-shrink-0 flex flex-col items-center order-2 md:order-1">
           <img 
             src={currentLogo}
             alt={logoAlt}
@@ -111,6 +115,19 @@ const Header = memo(() => {
             loading="eager"
             key={language} // Force re-render for smooth transition
           />
+          {showBackButton && onBackClick && (
+            <button
+              onClick={onBackClick}
+              className="mt-2 px-3 py-1.5 text-white rounded text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-sm cursor-pointer"
+              style={{ backgroundColor: regionColor }}
+              aria-label={backButtonText}
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              {backButtonText}
+            </button>
+          )}
         </div>
         
         {/* Title Section */}
@@ -205,7 +222,9 @@ Header.displayName = 'Header';
 
 // PropTypes for type checking (development only)
 Header.propTypes = {
-  // No props currently, but structure is ready for future props
+  showBackButton: PropTypes.bool,
+  onBackClick: PropTypes.func,
+  regionColor: PropTypes.string,
 };
 
 export default Header;

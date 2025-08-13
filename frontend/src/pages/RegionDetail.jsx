@@ -4,8 +4,8 @@ import { useLanguage } from "../hooks/useLanguage";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-// Import the Adjara SVG as example (you can add more region SVGs later)
-import adjaraSvg from "../assets/svg/adjara.svg";
+// Import the main Georgia SVG to extract region paths
+import georgiaSvg from "../assets/svg/georgia.svg";
 
 // Region data from InteractiveMap
 const regionData = {
@@ -68,13 +68,21 @@ const regionIdMap = {
   "47": "GE-SK", // შიდა ქართლი
 };
 
-// Region SVG mapping (you can add more as needed)
+// Region SVG mapping - now using main Georgia SVG
 const regionSvgMap = {
-  "GE-AJ": adjaraSvg,
-  // Add more SVGs here as they become available
-  // "GE-TB": tbilisiSvg,
-  // "GE-GU": guriaSvg,
-  // etc.
+  "GE-AJ": georgiaSvg,
+  "GE-AB": georgiaSvg,
+  "GE-TS": georgiaSvg,
+  "GE-GU": georgiaSvg,
+  "GE-IM": georgiaSvg,
+  "GE-KA": georgiaSvg,
+  "GE-MM": georgiaSvg,
+  "GE-RL": georgiaSvg,
+  "GE-SZ": georgiaSvg,
+  "GE-SJ": georgiaSvg,
+  "GE-KK": georgiaSvg,
+  "GE-SK": georgiaSvg,
+  "GE-TB": georgiaSvg,
 };
 
 const RegionDetail = () => {
@@ -106,7 +114,41 @@ const RegionDetail = () => {
       try {
         const response = await fetch(regionSvgMap[regionCode]);
         const svgText = await response.text();
-        setRegionSvgContent(svgText);
+        
+        // Parse the SVG to extract only the specific region
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+        
+        // Find the specific region path by its id
+        const regionPath = svgDoc.querySelector(`#${regionCode}`);
+        
+        if (regionPath) {
+          // Get the original viewBox and dimensions
+          const originalSvg = svgDoc.querySelector("svg");
+          const viewBox = originalSvg.getAttribute("viewBox") || "0 0 1940 1000";
+          
+          // Create a new SVG with just the region path
+          const regionSvg = `
+            <svg viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%; max-width: 500px;">
+              <style>
+                .region-path {
+                  fill: ${region.color};
+                  stroke: #2d3748;
+                  stroke-width: 2;
+                  transition: all 0.3s ease;
+                }
+                .region-path:hover {
+                  filter: brightness(1.1);
+                }
+              </style>
+              ${regionPath.outerHTML.replace(/class="[^"]*"/, 'class="region-path"')}
+            </svg>
+          `;
+          
+          setRegionSvgContent(regionSvg);
+        } else {
+          setError("Region path not found in SVG");
+        }
       } catch (error) {
         console.error("Failed to load region SVG:", error);
         setError("Failed to load region map");
@@ -116,7 +158,7 @@ const RegionDetail = () => {
     };
 
     loadRegionSvg();
-  }, [regionCode]);
+  }, [regionCode, region]);
 
   // Handle back navigation
   const handleBackClick = () => {
@@ -147,23 +189,18 @@ const RegionDetail = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Header */}
-      <Header />
+      {/* Header with Back Button */}
+      <Header 
+        showBackButton={true} 
+        onBackClick={handleBackClick} 
+        regionColor={region?.color || "#6b7280"}
+      />
 
       {/* Main Content */}
       <main className="flex-1 p-4">
         <div className="max-w-8xl mx-auto h-full">
-          {/* Back button and title */}
+          {/* Title */}
           <div className="mb-4">
-            <button
-              onClick={handleBackClick}
-              className="mb-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors flex items-center gap-2"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              {isEnglish === "EN" ? "Back to Map" : "უკან რუკაზე"}
-            </button>
             <h1 className="text-3xl font-bold text-gray-900">{regionName}</h1>
           </div>
 
