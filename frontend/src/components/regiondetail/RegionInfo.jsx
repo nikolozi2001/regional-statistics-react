@@ -140,9 +140,10 @@ const RegionInfo = () => {
                       {children.map((child, index) => (
                         <button 
                           key={`${child.id}-${index}`}
-                          className="w-full text-left py-2 px-3 rounded-lg text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50/60 transition-all duration-200 ease-out group/item"
+                          className="w-full text-left py-2 px-3 rounded-lg text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50/60 transition-all duration-200 ease-out group/item flex items-center gap-2"
                           title={child.value}
                         >
+                          <FaFileExcel className="w-3 h-3 text-green-500 group-hover/item:text-green-600 transition-colors duration-200 flex-shrink-0" />
                           <span className="block truncate group-hover/item:font-medium transition-all duration-200">{child.value}</span>
                         </button>
                       ))}
@@ -205,9 +206,10 @@ const RegionInfo = () => {
                                       {children.map((child, index) => (
                                         <button 
                                           key={`${child.id}-${index}`}
-                                          className="w-full text-left py-1.5 px-2 rounded-md text-xs text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50/30 transition-all duration-200 ease-out group/leaf"
+                                          className="w-full text-left py-1.5 px-2 rounded-md text-xs text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50/30 transition-all duration-200 ease-out group/leaf flex items-center gap-2"
                                           title={child.value}
                                         >
+                                          <FaFileExcel className="w-3 h-3 text-green-500 group-hover/leaf:text-green-600 transition-colors duration-200 flex-shrink-0" />
                                           <span className="block truncate group-hover/leaf:font-medium transition-all duration-200">{child.value}</span>
                                         </button>
                                       ))}
