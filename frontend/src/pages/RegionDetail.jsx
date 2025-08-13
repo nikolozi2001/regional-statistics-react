@@ -85,6 +85,23 @@ const regionSvgMap = {
   "GE-TB": georgiaSvg,
 };
 
+// Region-specific transform data for proper display
+const regionTransforms = {
+  "GE-AJ": { scale: 5.2, originX: 490, originY: 850 }, // Adjara
+  "GE-GU": { scale: 6.0, originX: 550, originY: 700 }, // Guria
+  "GE-IM": { scale: 4.5, originX: 500, originY: 600 }, // Imereti
+  "GE-KA": { scale: 4.0, originX: 750, originY: 500 }, // Kakheti
+  "GE-KK": { scale: 5.0, originX: 600, originY: 800 }, // Kvemo Kartli
+  "GE-MM": { scale: 5.5, originX: 650, originY: 400 }, // Mtskheta-Mtianeti
+  "GE-RL": { scale: 7.0, originX: 450, originY: 350 }, // Racha-Lechkhumi
+  "GE-SJ": { scale: 4.8, originX: 400, originY: 700 }, // Samtskhe-Javakheti
+  "GE-SK": { scale: 5.5, originX: 600, originY: 600 }, // Shida Kartli
+  "GE-SZ": { scale: 4.2, originX: 350, originY: 450 }, // Samegrelo-Zemo Svaneti
+  "GE-TB": { scale: 8.0, originX: 650, originY: 650 }, // Tbilisi
+  "GE-AB": { scale: 4.0, originX: 300, originY: 300 }, // Abkhazia
+  "GE-TS": { scale: 6.5, originX: 600, originY: 500 }, // Tskhinvali Region
+};
+
 const RegionDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -128,6 +145,9 @@ const RegionDetail = () => {
           const viewBox =
             originalSvg.getAttribute("viewBox") || "0 0 1000 1000";
 
+          // Get region-specific transform data
+          const transform = regionTransforms[regionCode] || { scale: 5.0, originX: 500, originY: 500 };
+
           // Create a new SVG with just the region path
           const regionSvg = `
             <svg viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
@@ -137,9 +157,9 @@ const RegionDetail = () => {
                   stroke: #fff;
                   stroke-width: 0.5;
                   transition: all 0.3s ease;
-                  transform: scale(5.2);
-                  -webkit-transform-origin-x: 490px;
-                  -webkit-transform-origin-y: 850px;
+                  transform: scale(${transform.scale});
+                  -webkit-transform-origin-x: ${transform.originX}px;
+                  -webkit-transform-origin-y: ${transform.originY}px;
                 }
                 .region-path:hover {
                   filter: brightness(1.1);
