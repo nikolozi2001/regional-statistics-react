@@ -1,4 +1,4 @@
-const db = require('../db');
+const pool = require('../db');
 const { catchAsync } = require('../middleware/errorHandler');
 
 const healthCheck = catchAsync(async (req, res) => {
@@ -6,7 +6,7 @@ const healthCheck = catchAsync(async (req, res) => {
   
   // Check database connection
   try {
-    await db.execute('SELECT 1');
+    await pool.execute('SELECT 1');
     const dbStatus = 'healthy';
     const dbLatency = Date.now() - startTime;
     

@@ -4,7 +4,6 @@ const router = express.Router();
 // Import controllers
 const regionsController = require("../controllers/regionsController");
 const indicatorsController = require("../controllers/indicatorsController");
-const indicatorsEnController = require("../controllers/indicatorsEnController");
 const mainInfoController = require("../controllers/mainInfoController");
 const { healthCheck } = require("../controllers/healthController");
 
@@ -30,8 +29,7 @@ router.get("/regions/:id/statistics", validateRegionId, regionsController.getReg
 router.get("/statistics", regionsController.getAllStatistics);
 
 // Indicators routes
-router.get("/indicators/:row", indicatorsController.getIndicatorRow);
-router.get("/indicatorsEn/:row", indicatorsEnController.getIndicatorRowEn);
+router.get("/regionStatistics", indicatorsController.getRegionStatistics);
 
 // Main info routes with language validation
 router.get("/mainInfo", validateLanguage, mainInfoController.getMainInfo);

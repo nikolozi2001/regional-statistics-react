@@ -1,4 +1,4 @@
-const db = require("../db");
+const pool = require("../db");
 const logger = require("../logger");
 const { catchAsync, AppError } = require("../middleware/errorHandler");
 
@@ -10,7 +10,7 @@ const getMainInfo = catchAsync(async (req, res) => {
   
   // Query the main_info table - match actual table structure
   const query = `SELECT id, title_ge, title_en, data, tooltip_ge, tooltip_en FROM main_info`;
-  const [rows] = await db.execute(query);
+  const [rows] = await pool.execute(query);
 
   if (!rows || rows.length === 0) {
     throw new AppError('No main info data found', 404);

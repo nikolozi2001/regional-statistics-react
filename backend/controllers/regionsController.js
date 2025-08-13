@@ -1,10 +1,10 @@
-const db = require("../db");
+const pool = require("../db");
 const logger = require("../logger");
 const { catchAsync, AppError } = require("../middleware/errorHandler");
 
 const getAllRegions = catchAsync(async (req, res) => {
   const query = 'SELECT * FROM regions WHERE ID > 0'; // Exclude negative IDs
-  const [rows] = await db.execute(query);
+  const [rows] = await pool.execute(query);
   
   res.status(200).json({
     success: true,
@@ -17,7 +17,7 @@ const getRegionById = catchAsync(async (req, res) => {
   const { id } = req.params;
   
   const query = 'SELECT * FROM regions WHERE ID = ?';
-  const [rows] = await db.execute(query, [id]);
+  const [rows] = await pool.execute(query, [id]);
   
   if (rows.length === 0) {
     throw new AppError(`Region with ID ${id} not found`, 404);
@@ -33,7 +33,7 @@ const getRegionStatistics = catchAsync(async (req, res) => {
   const { id } = req.params;
   
   const query = 'SELECT * FROM regions WHERE ID = ?';
-  const [rows] = await db.execute(query, [id]);
+  const [rows] = await pool.execute(query, [id]);
   
   if (rows.length === 0) {
     throw new AppError(`Region with ID ${id} not found`, 404);
@@ -61,7 +61,7 @@ const getAllStatistics = catchAsync(async (req, res) => {
     WHERE ID > 0 AND Population != '-' AND Area != '-'
   `;
   
-  const [rows] = await db.execute(query);
+  const [rows] = await pool.execute(query);
   
   res.status(200).json({
     success: true,

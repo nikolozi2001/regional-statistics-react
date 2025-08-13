@@ -327,7 +327,7 @@ const RegionDetail = () => {
           {/* Three-section layout: 20% - 60% - 20% */}
           <div className="h-full min-h-[600px] flex gap-4">
             {/* Left Section (20%) */}
-            <RegionInfo region={region} regionId={id} />
+            <RegionInfo />
 
             {/* Center Section (60%) - Map Display */}
             <div className="w-3/5 bg-white rounded-lg shadow-md p-4 h-full">
