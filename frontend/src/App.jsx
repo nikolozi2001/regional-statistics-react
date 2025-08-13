@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { LanguageProvider } from './contexts/LanguageContext.jsx';
 import Dashboard from './pages/Dashboard';
+import RegionDetail from './pages/RegionDetail';
 import './App.css';
 
 const theme = createTheme({
@@ -34,6 +35,10 @@ function App() {
               {/* Language-specific routes */}
               <Route path="/ge" element={<Dashboard />} />
               <Route path="/en" element={<Dashboard />} />
+              
+              {/* Region detail routes */}
+              <Route path="/ge/region/:id" element={<RegionDetail />} />
+              <Route path="/en/region/:id" element={<RegionDetail />} />
               
               {/* Catch all other routes and redirect to Georgian */}
               <Route path="*" element={<Navigate to="/ge" replace />} />

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <style>
+      .adjara-region {
+        fill: #ce8d34;
+        stroke: #fff;
+        stroke-width: 2;
+        transition: all 0.3s ease;
+      }
+      .adjara-region:hover {
+        fill: #b17629;
+        filter: brightness(1.1);
+      }
+      .region-label {
+        font-family: 'Arial', sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        text-anchor: middle;
+        fill: #fff;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      }
+      .border-line {
+        fill: none;
+        stroke: #666;
+        stroke-width: 1;
+        stroke-dasharray: 5,5;
+      }
+    </style>
+  </defs>
+  
+  <!-- Adjara region outline (simplified representation) -->
+  <path class="adjara-region" d="M150,200 L350,180 L380,220 L400,280 L390,350 L360,400 L320,450 L280,480 L220,490 L180,470 L140,440 L120,400 L110,350 L120,300 L140,250 Z"/>
+  
+  <!-- Internal boundaries/municipalities (simplified) -->
+  <path class="border-line" d="M200,250 L350,240 L340,350 L200,360 Z"/>
+  <path class="border-line" d="M240,280 L320,275 L315,320 L245,325 Z"/>
+  
+  <!-- Region label -->
+  <text class="region-label" x="250" y="340">Adjara</text>
+  <text class="region-label" x="250" y="370" font-size="18">აჭარა</text>
+  
+  <!-- Border with neighboring regions -->
+  <path class="border-line" d="M150,200 Q100,150 80,120"/>
+  <path class="border-line" d="M400,280 Q450,250 480,200"/>
+  
+  <!-- Coastline indication -->
+  <path d="M120,400 Q50,420 20,450" fill="none" stroke="#4a90e2" stroke-width="3"/>
+  <text x="30" y="440" font-size="12" fill="#4a90e2">Black Sea</text>
+  <text x="30" y="455" font-size="12" fill="#4a90e2">შავი ზღვა</text>
+  
+  <!-- Cities/towns (example points) -->
+  <circle cx="250" cy="320" r="4" fill="#fff" stroke="#333" stroke-width="1"/>
+  <text x="260" y="325" font-size="12" fill="#333">Batumi</text>
+  
+  <circle cx="300" cy="260" r="3" fill="#fff" stroke="#333" stroke-width="1"/>
+  <text x="310" y="265" font-size="10" fill="#333">Kobuleti</text>
+  
+  <circle cx="200" cy="280" r="3" fill="#fff" stroke="#333" stroke-width="1"/>
+  <text x="170" y="275" font-size="10" fill="#333">Khelvachauri</text>
+</svg>

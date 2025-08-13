@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../hooks/useLanguage";
 import georgiaMap from "../assets/svg/georgia.svg";
 import backgroundIMG from "../assets/images/reg_photos/15.jpg";
@@ -62,42 +63,36 @@ const regionIdMap = {
   "GE-SJ": "41", // სამცხე-ჯავახეთი
   "GE-KK": "44", // ქვემო ქართლი
   "GE-SK": "47", // შიდა ქართლი
+  "GE-AB": null, // Disputed territory - no navigation
+  "GE-TS": null, // Disputed territory - no navigation
 };
 
 const InteractiveMap = () => {
   const { isEnglish } = useLanguage();
+  const navigate = useNavigate();
   const svgRef = useRef(null);
-  const [zoomedRegion, setZoomedRegion] = useState(null);
-  const [selectedRegion, setSelectedRegion] = useState(null);
   const [hoveredRegion, setHoveredRegion] = useState(null);
   const [error, setError] = useState(null);
 
-  // Function to toggle region zoom
-  const toggleRegionZoom = useCallback((id) => {
-    setZoomedRegion((current) => (current === id ? null : id));
-  }, []);
-
-  // Function to handle region click - updates with numerical ID from mapping
+  // Function to handle region click - navigates to region detail page
   const handleRegionClick = useCallback(
     (id) => {
-      setSelectedRegion((prev) => {
-        const numericId = regionIdMap[id];
-        return prev === numericId ? null : numericId;
-      });
-      toggleRegionZoom(id);
+      // Skip navigation for disputed territories
+      if (id === "GE-AB" || id === "GE-TS") {
+        return;
+      }
+      
+      const numericId = regionIdMap[id];
+      if (numericId) {
+        const currentLanguage = isEnglish === "EN" ? "en" : "ge";
+        navigate(`/${currentLanguage}/region/${numericId}`);
+      }
     },
-    [toggleRegionZoom]
+    [navigate, isEnglish]
   );
 
   // Function to handle region hover - still using the GE-XX format for hovering
   const handleRegionHover = (id) => setHoveredRegion(id);
-
-  // Helper function to get GE-XX code from a numeric region ID
-  const getGeCodeFromRegionId = useCallback((numericId) => {
-    return Object.keys(regionIdMap).find(
-      (key) => regionIdMap[key] === numericId
-    );
-  }, []);
 
   // Effect to handle SVG loading and manipulation
   useEffect(() => {
@@ -319,52 +314,6 @@ const InteractiveMap = () => {
       }
     };
   }, [handleRegionClick, isEnglish]); // Added language dependency
-
-  // Effect to update selected/hovered/zoomed state
-  useEffect(() => {
-    if (!svgRef.current) return;
-    const selectedGeCode = getGeCodeFromRegionId(selectedRegion);
-    const paths = svgRef.current.querySelectorAll("path");
-
-    paths.forEach((path) => {
-      const pathId = path.getAttribute("id");
-      if (pathId) {
-        // Handle selection highlighting
-        path.classList.toggle("selected", pathId === selectedGeCode);
-
-        // Handle zoom state
-        path.classList.toggle("zoomed", pathId === zoomedRegion);
-        path.classList.toggle(
-          "region-hidden",
-          zoomedRegion !== null && pathId !== zoomedRegion
-        );
-
-        // Zoom functionality
-        if (pathId === zoomedRegion) {
-          const bbox = path.getBBox();
-          // Add responsive padding based on viewport
-          const isSmallScreen = window.innerWidth < 768;
-          const padding = isSmallScreen ? 15 : 30;
-          const viewBox = `${bbox.x - padding} ${bbox.y - padding} ${
-            bbox.width + padding * 2
-          } ${bbox.height + padding * 2}`;
-          svgRef.current.setAttribute("viewBox", viewBox);
-          svgRef.current.style.transition = "all 0.6s ease-in-out";
-        } else if (!zoomedRegion) {
-          // Reset to original viewBox when no region is zoomed
-          const fullBbox = svgRef.current.getBBox();
-          const padding = 10;
-          svgRef.current.setAttribute(
-            "viewBox",
-            `${fullBbox.x - padding} ${fullBbox.y - padding} ${
-              fullBbox.width + padding * 2
-            } ${fullBbox.height + padding * 2}`
-          );
-          svgRef.current.style.transition = "all 0.6s ease-in-out";
-        }
-      }
-    });
-  }, [selectedRegion, hoveredRegion, zoomedRegion, getGeCodeFromRegionId]);
 
   return (
     <div className="h-full bg-white">
