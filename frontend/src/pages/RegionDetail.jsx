@@ -54,18 +54,18 @@ const regionData = {
 
 // Mapping from numeric region IDs to GE-XX codes
 const regionIdMap = {
-  "0": "GE", // საქართველო
-  "11": "GE-TB", // ქ. თბილისი
-  "15": "GE-AJ", // აჭარის ა.რ.
-  "23": "GE-GU", // გურია
-  "26": "GE-IM", // იმერეთი
-  "29": "GE-KA", // კახეთი
-  "32": "GE-MM", // მცხეთა-მთიანეთ
-  "35": "GE-RL", // რაჭა-ლეჩხუმი და ქვემო სვანეთი
-  "38": "GE-SZ", // სამეგრელო-ზემო სვანეთი
-  "41": "GE-SJ", // სამცხე-ჯავახეთი
-  "44": "GE-KK", // ქვემო ქართლი
-  "47": "GE-SK", // შიდა ქართლი
+  0: "GE", // საქართველო
+  11: "GE-TB", // ქ. თბილისი
+  15: "GE-AJ", // აჭარის ა.რ.
+  23: "GE-GU", // გურია
+  26: "GE-IM", // იმერეთი
+  29: "GE-KA", // კახეთი
+  32: "GE-MM", // მცხეთა-მთიანეთ
+  35: "GE-RL", // რაჭა-ლეჩხუმი და ქვემო სვანეთი
+  38: "GE-SZ", // სამეგრელო-ზემო სვანეთი
+  41: "GE-SJ", // სამცხე-ჯავახეთი
+  44: "GE-KK", // ქვემო ქართლი
+  47: "GE-SK", // შიდა ქართლი
 };
 
 // Region SVG mapping - now using main Georgia SVG
@@ -114,37 +114,44 @@ const RegionDetail = () => {
       try {
         const response = await fetch(regionSvgMap[regionCode]);
         const svgText = await response.text();
-        
+
         // Parse the SVG to extract only the specific region
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
-        
+
         // Find the specific region path by its id
         const regionPath = svgDoc.querySelector(`#${regionCode}`);
-        
+
         if (regionPath) {
           // Get the original viewBox and dimensions
           const originalSvg = svgDoc.querySelector("svg");
-          const viewBox = originalSvg.getAttribute("viewBox") || "0 0 1940 1000";
-          
+          const viewBox =
+            originalSvg.getAttribute("viewBox") || "0 0 1000 1000";
+
           // Create a new SVG with just the region path
           const regionSvg = `
-            <svg viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%; max-width: 500px;">
+            <svg viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
               <style>
                 .region-path {
                   fill: ${region.color};
                   stroke: #2d3748;
                   stroke-width: 2;
                   transition: all 0.3s ease;
+                  transform: scale(3.2);
+                  -webkit-transform-origin-x: 200px;
+                  -webkit-transform-origin-y: 850px;
                 }
                 .region-path:hover {
                   filter: brightness(1.1);
                 }
               </style>
-              ${regionPath.outerHTML.replace(/class="[^"]*"/, 'class="region-path"')}
+              ${regionPath.outerHTML.replace(
+                /class="[^"]*"/,
+                'class="region-path"'
+              )}
             </svg>
           `;
-          
+
           setRegionSvgContent(regionSvg);
         } else {
           setError("Region path not found in SVG");
@@ -190,9 +197,9 @@ const RegionDetail = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Header with Back Button */}
-      <Header 
-        showBackButton={true} 
-        onBackClick={handleBackClick} 
+      <Header
+        showBackButton={true}
+        onBackClick={handleBackClick}
         regionColor={region?.color || "#6b7280"}
       />
 
@@ -211,7 +218,7 @@ const RegionDetail = () => {
               <h2 className="text-lg font-semibold text-gray-800 mb-4">
                 {isEnglish === "EN" ? "Region Info" : "რეგიონის ინფორმაცია"}
               </h2>
-              
+
               <div className="space-y-3">
                 <div className="p-3 bg-gray-50 rounded">
                   <p className="text-sm text-gray-600 mb-1">
@@ -219,7 +226,7 @@ const RegionDetail = () => {
                   </p>
                   <p className="font-medium text-gray-900">{regionName}</p>
                 </div>
-                
+
                 <div className="p-3 bg-gray-50 rounded">
                   <p className="text-sm text-gray-600 mb-1">
                     {isEnglish === "EN" ? "Color" : "ფერი"}:
@@ -232,7 +239,7 @@ const RegionDetail = () => {
                     <span className="text-sm font-mono">{region.color}</span>
                   </div>
                 </div>
-                
+
                 <div className="p-3 bg-gray-50 rounded">
                   <p className="text-sm text-gray-600 mb-1">
                     {isEnglish === "EN" ? "Region ID" : "რეგიონის ID"}:
@@ -243,49 +250,56 @@ const RegionDetail = () => {
             </div>
 
             {/* Center Section (60%) - Map Display */}
-            <div className="w-3/5 bg-white rounded-lg shadow-md p-4">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                {isEnglish === "EN" ? "Region Map" : "რეგიონის რუკა"}
-              </h2>
-              
-              <div className="h-full bg-gray-50 rounded border-2 border-dashed border-gray-300 flex items-center justify-center">
-                {loading ? (
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">
-                      {isEnglish === "EN" ? "Loading map..." : "იტვირთება რუკა..."}
-                    </p>
-                  </div>
-                ) : error ? (
-                  <div className="text-center text-red-600">
-                    <p>{error}</p>
-                  </div>
-                ) : regionSvgContent ? (
-                  <div
-                    className="w-full h-full flex items-center justify-center"
-                    dangerouslySetInnerHTML={{ __html: regionSvgContent }}
-                    style={{
-                      minHeight: "400px",
-                    }}
-                  />
-                ) : (
-                  <div className="text-center text-gray-500">
-                    <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m-6 3l6-3" />
-                    </svg>
-                    <p className="text-lg">
-                      {isEnglish === "EN" 
-                        ? "Detailed map not available" 
-                        : "დეტალური რუკა მიუწვდომელია"}
-                    </p>
-                    <p className="text-sm mt-2">
-                      {isEnglish === "EN" 
-                        ? "Region data is available in the sidebar" 
-                        : "რეგიონის მონაცემები ხელმისაწვდომია გვერდითი პანელში"}
-                    </p>
-                  </div>
-                )}
-              </div>
+            <div className="w-3/5 bg-white rounded-lg shadow-md p-4 h-full">
+              {loading ? (
+                <div className="text-center py-20">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-600">
+                    {isEnglish === "EN"
+                      ? "Loading map..."
+                      : "იტვირთება რუკა..."}
+                  </p>
+                </div>
+              ) : error ? (
+                <div className="text-center text-red-600 py-20">
+                  <p>{error}</p>
+                </div>
+              ) : regionSvgContent ? (
+                <div
+                  dangerouslySetInnerHTML={{ __html: regionSvgContent }}
+                  style={{
+                    minHeight: "400px",
+                    width: "100%",
+                    height: "100%"
+                  }}
+                />
+              ) : (
+                <div className="text-center text-gray-500">
+                  <svg
+                    className="w-16 h-16 mx-auto mb-4 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m-6 3l6-3"
+                    />
+                  </svg>
+                  <p className="text-lg">
+                    {isEnglish === "EN"
+                      ? "Detailed map not available"
+                      : "დეტალური რუკა მიუწვდომელია"}
+                  </p>
+                  <p className="text-sm mt-2">
+                    {isEnglish === "EN"
+                      ? "Region data is available in the sidebar"
+                      : "რეგიონის მონაცემები ხელმისაწვდომია გვერდითი პანელში"}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Right Section (20%) */}
@@ -293,7 +307,7 @@ const RegionDetail = () => {
               <h2 className="text-lg font-semibold text-gray-800 mb-4">
                 {isEnglish === "EN" ? "Statistics" : "სტატისტიკა"}
               </h2>
-              
+
               <div className="space-y-3">
                 <div className="p-3 bg-blue-50 rounded">
                   <p className="text-sm text-blue-600 mb-1">
@@ -301,34 +315,40 @@ const RegionDetail = () => {
                   </p>
                   <p className="text-lg font-bold text-blue-900">-</p>
                   <p className="text-xs text-blue-700">
-                    {isEnglish === "EN" ? "Data pending" : "მონაცემები მომზადდება"}
+                    {isEnglish === "EN"
+                      ? "Data pending"
+                      : "მონაცემები მომზადდება"}
                   </p>
                 </div>
-                
+
                 <div className="p-3 bg-green-50 rounded">
                   <p className="text-sm text-green-600 mb-1">
                     {isEnglish === "EN" ? "Area" : "ფართობი"}
                   </p>
                   <p className="text-lg font-bold text-green-900">-</p>
                   <p className="text-xs text-green-700">
-                    {isEnglish === "EN" ? "Data pending" : "მონაცემები მომზადდება"}
+                    {isEnglish === "EN"
+                      ? "Data pending"
+                      : "მონაცემები მომზადდება"}
                   </p>
                 </div>
-                
+
                 <div className="p-3 bg-purple-50 rounded">
                   <p className="text-sm text-purple-600 mb-1">
                     {isEnglish === "EN" ? "Municipalities" : "მუნიციპალიტეტები"}
                   </p>
                   <p className="text-lg font-bold text-purple-900">-</p>
                   <p className="text-xs text-purple-700">
-                    {isEnglish === "EN" ? "Data pending" : "მონაცემები მომზადდება"}
+                    {isEnglish === "EN"
+                      ? "Data pending"
+                      : "მონაცემები მომზადდება"}
                   </p>
                 </div>
-                
+
                 <div className="mt-6 p-3 bg-gray-100 rounded">
                   <p className="text-xs text-gray-600 text-center">
-                    {isEnglish === "EN" 
-                      ? "More detailed statistics will be available soon" 
+                    {isEnglish === "EN"
+                      ? "More detailed statistics will be available soon"
                       : "მეტი დეტალური სტატისტიკა მალე ხელმისაწვდომი იქნება"}
                   </p>
                 </div>
