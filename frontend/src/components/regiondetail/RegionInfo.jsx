@@ -122,9 +122,11 @@ const RegionInfo = () => {
               >
                 <Collapsible.Trigger className="w-full text-left py-3 px-4 rounded-xl hover:bg-gray-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-gray-100">
                   <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{value}</span>
-                  <ChevronDownIcon 
-                    className={`w-4 h-4 text-gray-400 group-hover:text-gray-600 transform transition-all duration-300 ease-out ${isOpen ? 'rotate-180' : ''}`}
-                  />
+                  {children.length > 0 && (
+                    <ChevronDownIcon 
+                      className={`w-4 h-4 text-gray-400 group-hover:text-gray-600 transform transition-all duration-300 ease-out ${isOpen ? 'rotate-180' : ''}`}
+                    />
+                  )}
                 </Collapsible.Trigger>
 
                 {children.length > 0 && (
@@ -155,9 +157,11 @@ const RegionInfo = () => {
                       <span className="text-sm font-medium text-indigo-700 group-hover:text-indigo-900 transition-colors duration-200">
                         {isEnglish ? "Demography" : "დემოგრაფია"}
                       </span>
-                      <ChevronDownIcon 
-                        className={`w-4 h-4 text-indigo-400 group-hover:text-indigo-600 transform transition-all duration-300 ease-out ${openSections.demography ? 'rotate-180' : ''}`}
-                      />
+                      {demographicCategoriesData.length > 0 && (
+                        <ChevronDownIcon 
+                          className={`w-4 h-4 text-indigo-400 group-hover:text-indigo-600 transform transition-all duration-300 ease-out ${openSections.demography ? 'rotate-180' : ''}`}
+                        />
+                      )}
                     </Collapsible.Trigger>
 
                     <Collapsible.Content className="overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
