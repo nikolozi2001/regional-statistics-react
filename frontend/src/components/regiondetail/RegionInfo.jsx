@@ -4,7 +4,7 @@ import * as Collapsible from '@radix-ui/react-collapsible';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 
 const RegionInfo = () => {
-  const { isEnglish } = useLanguage();
+  const { isEnglish, language } = useLanguage();
   const [openSections, setOpenSections] = useState({});
   const [statisticsData, setStatisticsData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,9 +15,13 @@ const RegionInfo = () => {
     const fetchStatistics = async () => {
       try {
         setLoading(true);
-        const language = isEnglish === "EN" ? "en" : "ge";
-        const response = await fetch(`http://192.168.1.27:8080/api/regionStatistics?lang=${language}`);
+        setError(null); // Reset error state
+        const langParam = isEnglish ? "en" : "ge";
+        console.log('Fetching statistics with language:', langParam); // Debug log
+        const response = await fetch(`http://192.168.1.27:8080/api/regionStatistics?lang=${langParam}`);
         const data = await response.json();
+        
+        console.log('API response:', data); // Debug log
         
         if (data.success) {
           setStatisticsData(data.data);
@@ -25,6 +29,7 @@ const RegionInfo = () => {
           setError('Failed to load statistics data');
         }
       } catch (err) {
+        console.error('Error fetching statistics:', err); // Debug log
         setError('Error fetching statistics data: ' + err.message);
       } finally {
         setLoading(false);
@@ -32,7 +37,7 @@ const RegionInfo = () => {
     };
 
     fetchStatistics();
-  }, [isEnglish]);
+  }, [isEnglish, language]); // Added language as dependency for extra safety
 
   // Define demographic categories that should be grouped under "დემოგრაფია"
   const demographicCategoryKeys = ['birth', 'death', 'naturalIncrease', 'marriage', 'divorce', 'populationDescription'];
@@ -76,10 +81,13 @@ const RegionInfo = () => {
     return (
       <div className="w-1/5 bg-white rounded-lg shadow-md p-4">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
-          {isEnglish === "EN" ? "Regional Statistics" : "რეგიონული სტატისტიკა"}
+          {isEnglish ? "Regional Statistics" : "რეგიონული სტატისტიკა"}
         </h2>
         <div className="text-sm text-gray-600">
-          {isEnglish === "EN" ? "Loading..." : "იტვირთება..."}
+          {isEnglish ? "Loading..." : "იტვირთება..."}
+        </div>
+        <div className="text-xs text-gray-400 mt-2">
+          Language: {language} ({isEnglish ? "EN" : "GE"})
         </div>
       </div>
     );
@@ -89,9 +97,12 @@ const RegionInfo = () => {
     return (
       <div className="w-1/5 bg-white rounded-lg shadow-md p-4">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
-          {isEnglish === "EN" ? "Regional Statistics" : "რეგიონული სტატისტიკა"}
+          {isEnglish ? "Regional Statistics" : "რეგიონული სტატისტიკა"}
         </h2>
         <div className="text-sm text-red-600">{error}</div>
+        <div className="text-xs text-gray-400 mt-2">
+          Language: {language} ({isEnglish ? "EN" : "GE"})
+        </div>
       </div>
     );
   }
@@ -102,7 +113,7 @@ const RegionInfo = () => {
   return (
     <div className="w-1/5 bg-white rounded-lg shadow-md p-4">
       <h2 className="text-lg font-semibold text-gray-800 mb-4">
-        {isEnglish === "EN" ? "Regional Statistics" : "რეგიონული სტატისტიკა"}
+        {isEnglish ? "Regional Statistics" : "რეგიონული სტატისტიკა"}
       </h2>
 
       <div className="space-y-3">
@@ -153,7 +164,7 @@ const RegionInfo = () => {
                     <div className="border-b pb-2">
                       <Collapsible.Trigger className="w-full text-left text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center justify-between">
                         <span className="truncate pr-2">
-                          {isEnglish === "EN" ? "Demography" : "დემოგრაფია"}
+                          {isEnglish ? "Demography" : "დემოგრაფია"}
                         </span>
                         <ChevronDownIcon 
                           className={`w-4 h-4 transform transition-transform duration-200 flex-shrink-0 ${openSections.demography ? 'rotate-180' : ''}`}

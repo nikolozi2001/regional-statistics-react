@@ -160,13 +160,6 @@ const RegionDetail = () => {
     return municipalities;
   };
 
-  // Get region name based on language
-  const regionName = region
-    ? isEnglish === "EN"
-      ? region.nameEn
-      : region.nameGe
-    : "Unknown Region";
-
   useEffect(() => {
     const loadRegionSvg = async () => {
       if (!regionCode || !regionSvgMap[regionCode]) {
