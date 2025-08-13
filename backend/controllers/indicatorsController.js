@@ -7,10 +7,13 @@ const getRegionStatistics = catchAsync(async (req, res) => {
   const table =
     lang === "en" ? "regional_statistics_en" : "regional_statistics";
 
-  logger.info(`GET /api/indicators - Language: ${lang}`);
+  logger.info(`GET /api/regionStatistics - Language: ${lang}`);
 
-  // Query the regional_statistics table - get all fields
-  const query = `SELECT * FROM ${table}`;
+  // Query the regions table for actual regional statistics data
+  const query = `
+    SELECT * from ${table}
+  `;
+
   const [rows] = await pool.execute(query);
 
   if (!rows || rows.length === 0) {
