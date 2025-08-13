@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "../../hooks/useLanguage";
+import { apiService } from "../../services/api";
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 
@@ -17,20 +18,11 @@ const RegionInfo = () => {
         setLoading(true);
         setError(null); // Reset error state
         const langParam = isEnglish ? "en" : "ge";
-        console.log('Fetching statistics with language:', langParam); // Debug log
-        const response = await fetch(`http://192.168.1.27:8080/api/regionStatistics?lang=${langParam}`);
-        const data = await response.json();
-        
-        console.log('API response:', data); // Debug log
-        
-        if (data.success) {
-          setStatisticsData(data.data);
-        } else {
-          setError('Failed to load statistics data');
-        }
+        const result = await apiService.getRegionStatisticsData(langParam);
+        setStatisticsData(result.data);
       } catch (err) {
         console.error('Error fetching statistics:', err); // Debug log
-        setError('Error fetching statistics data: ' + err.message);
+        setError(err.message);
       } finally {
         setLoading(false);
       }

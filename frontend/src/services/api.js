@@ -26,6 +26,25 @@ export const apiService = {
     return fetch(`${baseURL}/mainInfo?language=${language}`)
       .then(response => response.json());
   },
+
+  // Region Statistics
+  getRegionStatisticsData: async (language = 'ge') => {
+    try {
+      const baseURL = 'http://192.168.1.27:8080/api';
+      const langParam = language === 'en' || language === true ? 'en' : 'ge';
+      const response = await fetch(`${baseURL}/regionStatistics?lang=${langParam}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        return { success: true, data: data.data };
+      } else {
+        throw new Error('Failed to load statistics data');
+      }
+    } catch (error) {
+      console.error('Error fetching statistics:', error);
+      throw new Error('Error fetching statistics data: ' + error.message);
+    }
+  },
 };
 
 export default api;
