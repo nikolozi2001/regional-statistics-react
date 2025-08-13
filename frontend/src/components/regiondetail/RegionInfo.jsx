@@ -3,6 +3,7 @@ import { useLanguage } from "../../hooks/useLanguage";
 import { apiService } from "../../services/api";
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
+import { FaFileExcel } from 'react-icons/fa';
 
 const RegionInfo = () => {
   const { isEnglish, language } = useLanguage();
@@ -122,9 +123,13 @@ const RegionInfo = () => {
               >
                 <Collapsible.Trigger className="w-full text-left py-3 px-4 rounded-xl hover:bg-gray-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-gray-100">
                   <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{value}</span>
-                  {children.length > 0 && (
+                  {children.length > 0 ? (
                     <ChevronDownIcon 
                       className={`w-4 h-4 text-gray-400 group-hover:text-gray-600 transform transition-all duration-300 ease-out ${isOpen ? 'rotate-180' : ''}`}
+                    />
+                  ) : (
+                    <FaFileExcel 
+                      className="w-4 h-4 text-green-500 group-hover:text-green-600 transition-colors duration-200"
                     />
                   )}
                 </Collapsible.Trigger>
@@ -157,9 +162,13 @@ const RegionInfo = () => {
                       <span className="text-sm font-medium text-indigo-700 group-hover:text-indigo-900 transition-colors duration-200">
                         {isEnglish ? "Demography" : "დემოგრაფია"}
                       </span>
-                      {demographicCategoriesData.length > 0 && (
+                      {demographicCategoriesData.length > 0 ? (
                         <ChevronDownIcon 
                           className={`w-4 h-4 text-indigo-400 group-hover:text-indigo-600 transform transition-all duration-300 ease-out ${openSections.demography ? 'rotate-180' : ''}`}
+                        />
+                      ) : (
+                        <FaFileExcel 
+                          className="w-4 h-4 text-green-500 group-hover:text-green-600 transition-colors duration-200"
                         />
                       )}
                     </Collapsible.Trigger>
@@ -179,9 +188,13 @@ const RegionInfo = () => {
                               <div className="ml-2 border-l border-indigo-100 pl-4 group/sub">
                                 <Collapsible.Trigger className="w-full text-left py-2 px-3 rounded-lg hover:bg-indigo-50/50 transition-all duration-200 ease-out flex items-center justify-between">
                                   <span className="text-xs font-medium text-indigo-600 group-hover/sub:text-indigo-800 transition-colors duration-200">{demValue}</span>
-                                  {children.length > 0 && (
+                                  {children.length > 0 ? (
                                     <ChevronDownIcon 
                                       className={`w-3 h-3 text-indigo-400 group-hover/sub:text-indigo-600 transform transition-all duration-200 ease-out ${isDemographicSubOpen ? 'rotate-180' : ''}`}
+                                    />
+                                  ) : (
+                                    <FaFileExcel 
+                                      className="w-3 h-3 text-green-500 group-hover:text-green-600 transition-colors duration-200"
                                     />
                                   )}
                                 </Collapsible.Trigger>
