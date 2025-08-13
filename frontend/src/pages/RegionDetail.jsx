@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "../hooks/useLanguage";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import RegionInfo from "../components/regiondetail/RegionInfo";
 
 // Import the main Georgia SVG to extract region paths
 import georgiaSvg from "../assets/svg/georgia.svg";
@@ -323,48 +324,10 @@ const RegionDetail = () => {
       {/* Main Content */}
       <main className="flex-1 p-4">
         <div className="max-w-8xl mx-auto h-full">
-          {/* Title */}
-          <div className="mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">{regionName}</h1>
-          </div>
-
           {/* Three-section layout: 20% - 60% - 20% */}
           <div className="h-full min-h-[600px] flex gap-4">
             {/* Left Section (20%) */}
-            <div className="w-1/5 bg-white rounded-lg shadow-md p-4">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                {isEnglish === "EN" ? "Region Info" : "რეგიონის ინფორმაცია"}
-              </h2>
-
-              <div className="space-y-3">
-                <div className="p-3 bg-gray-50 rounded">
-                  <p className="text-sm text-gray-600 mb-1">
-                    {isEnglish === "EN" ? "Region" : "რეგიონი"}:
-                  </p>
-                  <p className="font-medium text-gray-900">{regionName}</p>
-                </div>
-
-                <div className="p-3 bg-gray-50 rounded">
-                  <p className="text-sm text-gray-600 mb-1">
-                    {isEnglish === "EN" ? "Color" : "ფერი"}:
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-4 h-4 rounded border"
-                      style={{ backgroundColor: region.color }}
-                    />
-                    <span className="text-sm font-mono">{region.color}</span>
-                  </div>
-                </div>
-
-                <div className="p-3 bg-gray-50 rounded">
-                  <p className="text-sm text-gray-600 mb-1">
-                    {isEnglish === "EN" ? "Region ID" : "რეგიონის ID"}:
-                  </p>
-                  <p className="font-medium text-gray-900">{id}</p>
-                </div>
-              </div>
-            </div>
+            <RegionInfo region={region} regionId={id} />
 
             {/* Center Section (60%) - Map Display */}
             <div className="w-3/5 bg-white rounded-lg shadow-md p-4 h-full">
