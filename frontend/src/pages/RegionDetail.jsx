@@ -134,11 +134,11 @@ const RegionDetail = () => {
               <style>
                 .region-path {
                   fill: ${region.color};
-                  stroke: #2d3748;
-                  stroke-width: 2;
+                  stroke: #fff;
+                  stroke-width: 0.5;
                   transition: all 0.3s ease;
-                  transform: scale(3.2);
-                  -webkit-transform-origin-x: 200px;
+                  transform: scale(5.2);
+                  -webkit-transform-origin-x: 490px;
                   -webkit-transform-origin-y: 850px;
                 }
                 .region-path:hover {
@@ -270,7 +270,7 @@ const RegionDetail = () => {
                   style={{
                     minHeight: "400px",
                     width: "100%",
-                    height: "100%"
+                    height: "100%",
                   }}
                 />
               ) : (
