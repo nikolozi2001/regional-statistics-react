@@ -103,42 +103,40 @@ const RegionInfo = () => {
   const demographicCategoriesData = getDemographicCategories();
 
   return (
-    <div className="w-1/5 bg-white rounded-lg shadow-md p-4">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">
+    <div className="w-1/5 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
+      <h2 className="text-xl font-light text-gray-900 mb-6 tracking-wide">
         {isEnglish ? "Regional Statistics" : "რეგიონული სტატისტიკა"}
       </h2>
 
-      <div className="space-y-3">
+      <div className="space-y-1">
         {/* Render categories in specific order */}
         {parentCategories.map(({ key, value }) => {
           const children = getChildrenForCategory(key);
           const isOpen = openSections[key] || false;
 
           return (
-            <div key={key}>
+            <div key={key} className="group">
               <Collapsible.Root 
                 open={isOpen} 
                 onOpenChange={(open) => setOpenSections(prev => ({ ...prev, [key]: open }))}
               >
-                <div className="border-b pb-2">
-                  <Collapsible.Trigger className="w-full text-left text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center justify-between">
-                    <span className="truncate pr-2">{value}</span>
-                    <ChevronDownIcon 
-                      className={`w-4 h-4 transform transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
-                    />
-                  </Collapsible.Trigger>
-                </div>
+                <Collapsible.Trigger className="w-full text-left py-3 px-4 rounded-xl hover:bg-gray-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-gray-100">
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{value}</span>
+                  <ChevronDownIcon 
+                    className={`w-4 h-4 text-gray-400 group-hover:text-gray-600 transform transition-all duration-300 ease-out ${isOpen ? 'rotate-180' : ''}`}
+                  />
+                </Collapsible.Trigger>
 
                 {children.length > 0 && (
-                  <Collapsible.Content className="data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
-                    <div className="space-y-2 mt-2 mb-4">
+                  <Collapsible.Content className="overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
+                    <div className="px-4 pb-2 space-y-1">
                       {children.map((child, index) => (
                         <button 
                           key={`${child.id}-${index}`}
-                          className="w-full text-left text-xs text-gray-600 hover:text-blue-600 py-1 px-2 rounded hover:bg-blue-50 transition-colors"
+                          className="w-full text-left py-2 px-3 rounded-lg text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50/60 transition-all duration-200 ease-out group/item"
                           title={child.value}
                         >
-                          <span className="block truncate">{child.value}</span>
+                          <span className="block truncate group-hover/item:font-medium transition-all duration-200">{child.value}</span>
                         </button>
                       ))}
                     </div>
@@ -148,24 +146,22 @@ const RegionInfo = () => {
 
               {/* Insert Demographic Section after Population */}
               {key === 'population' && demographicCategoriesData.length > 0 && (
-                <div className="mt-3">
+                <div className="mt-2 group">
                   <Collapsible.Root 
                     open={openSections.demography || false} 
                     onOpenChange={(open) => setOpenSections(prev => ({ ...prev, demography: open }))}
                   >
-                    <div className="border-b pb-2">
-                      <Collapsible.Trigger className="w-full text-left text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center justify-between">
-                        <span className="truncate pr-2">
-                          {isEnglish ? "Demography" : "დემოგრაფია"}
-                        </span>
-                        <ChevronDownIcon 
-                          className={`w-4 h-4 transform transition-transform duration-200 flex-shrink-0 ${openSections.demography ? 'rotate-180' : ''}`}
-                        />
-                      </Collapsible.Trigger>
-                    </div>
+                    <Collapsible.Trigger className="w-full text-left py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-indigo-50/80 hover:to-purple-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-indigo-100">
+                      <span className="text-sm font-medium text-indigo-700 group-hover:text-indigo-900 transition-colors duration-200">
+                        {isEnglish ? "Demography" : "დემოგრაფია"}
+                      </span>
+                      <ChevronDownIcon 
+                        className={`w-4 h-4 text-indigo-400 group-hover:text-indigo-600 transform transition-all duration-300 ease-out ${openSections.demography ? 'rotate-180' : ''}`}
+                      />
+                    </Collapsible.Trigger>
 
-                    <Collapsible.Content className="data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
-                      <div className="space-y-2 mt-2 mb-4">
+                    <Collapsible.Content className="overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
+                      <div className="px-4 pb-2 space-y-1">
                         {demographicCategoriesData.map(({ key: demKey, value: demValue }) => {
                           const children = getChildrenForCategory(demKey);
                           const isDemographicSubOpen = openSections[`demography-${demKey}`] || false;
@@ -176,26 +172,26 @@ const RegionInfo = () => {
                               open={isDemographicSubOpen} 
                               onOpenChange={(open) => setOpenSections(prev => ({ ...prev, [`demography-${demKey}`]: open }))}
                             >
-                              <div className="border-l-2 border-blue-200 pl-3">
-                                <Collapsible.Trigger className="w-full text-left text-xs font-medium text-blue-500 hover:text-blue-700 flex items-center justify-between py-1">
-                                  <span className="truncate pr-2">{demValue}</span>
+                              <div className="ml-2 border-l border-indigo-100 pl-4 group/sub">
+                                <Collapsible.Trigger className="w-full text-left py-2 px-3 rounded-lg hover:bg-indigo-50/50 transition-all duration-200 ease-out flex items-center justify-between">
+                                  <span className="text-xs font-medium text-indigo-600 group-hover/sub:text-indigo-800 transition-colors duration-200">{demValue}</span>
                                   {children.length > 0 && (
                                     <ChevronDownIcon 
-                                      className={`w-3 h-3 transform transition-transform duration-200 flex-shrink-0 ${isDemographicSubOpen ? 'rotate-180' : ''}`}
+                                      className={`w-3 h-3 text-indigo-400 group-hover/sub:text-indigo-600 transform transition-all duration-200 ease-out ${isDemographicSubOpen ? 'rotate-180' : ''}`}
                                     />
                                   )}
                                 </Collapsible.Trigger>
                                 
                                 {children.length > 0 && (
-                                  <Collapsible.Content className="data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
-                                    <div className="space-y-1 mt-1 ml-4">
+                                  <Collapsible.Content className="overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
+                                    <div className="pl-2 space-y-1 mt-1">
                                       {children.map((child, index) => (
                                         <button 
                                           key={`${child.id}-${index}`}
-                                          className="w-full text-left text-xs text-gray-600 hover:text-blue-600 py-1 px-2 rounded hover:bg-blue-50 transition-colors"
+                                          className="w-full text-left py-1.5 px-2 rounded-md text-xs text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50/30 transition-all duration-200 ease-out group/leaf"
                                           title={child.value}
                                         >
-                                          <span className="block truncate">{child.value}</span>
+                                          <span className="block truncate group-hover/leaf:font-medium transition-all duration-200">{child.value}</span>
                                         </button>
                                       ))}
                                     </div>
