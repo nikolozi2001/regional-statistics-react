@@ -58,10 +58,21 @@ const RegionInfo = () => {
   const getHealthcareCategories = () => {
     if (statisticsData.length === 0) return [];
     const firstRow = statisticsData[0];
-    return [
-      { key: 'healthcare', value: firstRow.healthCareAndSocialSecurity?.replace('ჯანდაცვა და სოციალური უზრუნველყოფა', 'ჯანდაცვა') },
-      { key: 'socialSecurity', value: firstRow.healthCareAndSocialSecurity?.replace('ჯანდაცვა და სოციალური უზრუნველყოფა', 'სოციალური უზრუნველყოფა') }
-    ].filter(item => item.value && item.value.trim() !== '');
+    const healthcareValue = firstRow.healthCareAndSocialSecurity;
+    
+    if (!healthcareValue) return [];
+    
+    if (isEnglish) {
+      return [
+        { key: 'healthcare', value: 'Healthcare' },
+        { key: 'socialSecurity', value: 'Social Security' }
+      ];
+    } else {
+      return [
+        { key: 'healthcare', value: 'ჯანდაცვა' },
+        { key: 'socialSecurity', value: 'სოციალური უზრუნველყოფა' }
+      ];
+    }
   };
 
   // Helper function to get children for healthcare specifically
@@ -86,7 +97,19 @@ const RegionInfo = () => {
          item.value.includes('ათაშანგით') || 
          item.value.includes('აივ ინფექციის') || 
          item.value.includes('ტუბერკულოზით') || 
-         item.value.includes('ვირუსული ჰეპატიტით'))
+         item.value.includes('ვირუსული ჰეპატიტით') ||
+         // English keywords - exact matches from your list
+         item.value.includes('Main characteristics of public health') ||
+         item.value.includes('Number of Abortions') ||
+         item.value.includes('New Cases of Anemia by Age') ||
+         item.value.includes('Number of New Cases of Diabetes Mellitus') ||
+         item.value.includes('Number New Cases of Malignant Neoplasm by Sex') ||
+         item.value.includes('New cases of the diseases of the circulatory system by sex') ||
+         item.value.includes('New cases of the diseases of the respiratory system by sex') ||
+         item.value.includes('Morbidity of patients with syphilis and gonorrheae by Sex') ||
+         item.value.includes('Number of HIV infection/AIDS cases by sex') ||
+         item.value.includes('Morbidity of patients with tuberculosis by sex') ||
+         item.value.includes('Morbidity of patients with Virus hepatitis'))
       );
   };
 
@@ -106,7 +129,14 @@ const RegionInfo = () => {
          item.value.includes('დევნილის სტატუსის') || 
          item.value.includes('მიზნობრივი სოციალური') || 
          item.value.includes('სოციალური პაკეტის') || 
-         item.value.includes('ახლად რეგისტრირებულ'))
+         item.value.includes('ახლად რეგისტრირებულ') ||
+         // English keywords - exact matches from your list
+         item.value.includes('Main characteristics of social security') ||
+         item.value.includes('Number of Internally Displaced Disability Persons Receiving Social Package') ||
+         item.value.includes('The number of persons with disabilities registered in the Unified database of targeted social assistance program') ||
+         item.value.includes('Number of disabilitie persons, registered in the Unified database of targeted social assistance program, receiving subsistence a') ||
+         item.value.includes('Number of Disability Persons Receiving Social Package') ||
+         item.value.includes('The number of newly registered beneficiaries of the state grant(s) based on the status of a person with disabilities by sex'))
       );
   };
 
@@ -297,7 +327,7 @@ const RegionInfo = () => {
                   >
                     <Collapsible.Trigger className="w-full text-left py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-green-50/80 hover:to-blue-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-green-100">
                       <span className="text-sm font-medium text-green-700 group-hover:text-green-900 transition-colors duration-200">
-                        ჯანდაცვა და სოციალური უზრუნველყოფა
+                        {isEnglish ? "Healthcare and Social Security" : "ჯანდაცვა და სოციალური უზრუნველყოფა"}
                       </span>
                       {healthcareCategoriesData.length > 0 ? (
                         <ChevronDownIcon 
