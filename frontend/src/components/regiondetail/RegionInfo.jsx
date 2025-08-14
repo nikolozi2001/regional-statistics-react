@@ -196,7 +196,7 @@ const RegionInfo = () => {
   const healthcareCategoriesData = getHealthcareCategories();
 
   return (
-    <div className="w-1/5 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
+    <div className="w-1/5   rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
       <h2 className="text-xl font-light text-gray-900 mb-6 tracking-wide">
         {isEnglish ? "Regional Statistics" : "რეგიონული სტატისტიკა"}
       </h2>

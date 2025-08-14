@@ -8,6 +8,16 @@ import RegionInfo from "../components/regiondetail/RegionInfo";
 // Import the main Georgia SVG to extract region paths
 import georgiaSvg from "../assets/svg/georgia.svg";
 
+// Import background images for regions
+import adjaraBackground from "../assets/images/reg_photos/4.jpg";
+import guriaBackground from "../assets/images/reg_photos/3.jpg";
+
+// Region background mapping
+const regionBackgrounds = {
+  "GE-AJ": adjaraBackground, // Adjara
+  "GE-GU": guriaBackground, // Guria
+};
+
 // Region data from InteractiveMap
 const regionData = {
   "GE-AB": { nameEn: "Abkhazia", nameGe: "აფხაზეთი", color: "#7b818c" },
@@ -115,6 +125,7 @@ const RegionDetail = () => {
   // Get region data from ID
   const regionCode = regionIdMap[id];
   const region = regionCode ? regionData[regionCode] : null;
+  const backgroundImage = regionCode ? regionBackgrounds[regionCode] : null;
 
   // Municipal name extraction helper function
   const extractMunicipalNames = (svgDoc, regionCode) => {
@@ -315,15 +326,25 @@ const RegionDetail = () => {
       />
 
       {/* Main Content */}
-      <main className="flex-1 p-4">
+      <main
+        className="flex-1 p-4"
+        style={{
+          backgroundImage: backgroundImage
+            ? `linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url(${backgroundImage})`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+        }}
+      >
         <div className="max-w-8xl mx-auto h-full">
           {/* Three-section layout: 20% - 60% - 20% */}
           <div className="h-full min-h-[600px] flex gap-4">
             {/* Left Section (20%) */}
             <RegionInfo />
 
-            {/* Center Section (60%) - Map Display */}
-            <div className="w-3/5 bg-white rounded-lg shadow-md p-4 h-full">
+            {/* Center Section (60%) - Map Display old classes rounded-lg shadow-md */}
+            <div className="w-3/5 p-4 h-full">
               {loading ? (
                 <div className="text-center py-20">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
