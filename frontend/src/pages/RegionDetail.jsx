@@ -398,7 +398,7 @@ const RegionDetail = () => {
             </div>
 
             {/* Right Section (20%) */}
-            <RegionStatistics municipalNames={municipalNames} regionCode={regionCode} />
+            <RegionStatistics regionCode={regionCode} />
           </div>
         </div>
       </main>

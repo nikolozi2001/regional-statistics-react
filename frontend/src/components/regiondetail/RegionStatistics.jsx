@@ -17,7 +17,7 @@ const regionMapping = {
   "GE-TB": "თბილისი"
 };
 
-const RegionStatistics = ({ municipalNames, regionCode }) => {
+const RegionStatistics = ({ regionCode }) => {
   const { isEnglish } = useLanguage();
   const [keyIndicators, setKeyIndicators] = useState([]);
   const [regionData, setRegionData] = useState(null);
@@ -88,12 +88,12 @@ const RegionStatistics = ({ municipalNames, regionCode }) => {
 
   if (loading) {
     return (
-      <div className="w-1/5 bg-white rounded-lg shadow-md p-4">
-        <div className="animate-pulse">
-          <div className="h-6 bg-gray-200 rounded mb-4"></div>
-          <div className="space-y-3">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-16 bg-gray-100 rounded"></div>
+      <div className="w-1/5 rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-5 bg-gray-200 rounded-lg w-3/4"></div>
+          <div className="space-y-1">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-12 bg-gray-100 rounded-xl"></div>
             ))}
           </div>
         </div>
@@ -103,11 +103,11 @@ const RegionStatistics = ({ municipalNames, regionCode }) => {
 
   if (error) {
     return (
-      <div className="w-1/5 bg-white rounded-lg shadow-md p-4">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
-          {isEnglish === "EN" ? "Statistics" : "სტატისტიკა"}
+      <div className="w-1/5 rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-wide">
+          {isEnglish === "EN" ? "Key Indicators" : "ძირითადი მაჩვენებლები"}
         </h2>
-        <div className="text-red-500 text-sm">
+        <div className="text-red-500 text-sm font-medium bg-red-50 p-3 rounded-lg">
           {isEnglish === "EN" ? "Error loading data" : "მონაცემების ჩატვირთვის შეცდომა"}
         </div>
       </div>
@@ -115,62 +115,29 @@ const RegionStatistics = ({ municipalNames, regionCode }) => {
   }
 
   return (
-    <div className="w-1/5 bg-white rounded-lg shadow-md p-4 max-h-screen overflow-y-auto">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">
+    <div className="w-1/5 rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6 max-h-screen overflow-y-auto">
+      <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-wide">
         {keyIndicators.find(item => item.ID === 1)?.keyIndicators || 
          (isEnglish === "EN" ? "Key Indicators" : "ძირითადი მაჩვენებლები")}
       </h2>
 
-      <div className="space-y-2">
+      <div className="space-y-1">
         {keyIndicators.filter(item => item.ID !== 1).map((indicator) => (
           <div 
             key={indicator.ID} 
-            className="p-3 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition-colors duration-200"
+            className="group w-full text-left py-3 px-4 rounded-xl hover:bg-gray-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-gray-100"
             title={indicator.dataContent}
           >
-            <div className="text-xs font-medium text-blue-700 mb-1 leading-tight">
-              {indicator.keyIndicators}
-            </div>
-            <div className="text-sm font-bold text-blue-900">
-              {getValue(indicator.ID)}
+            <div className="flex-1">
+              <div className="text-sm font-bold text-gray-700 group-hover:text-gray-900 transition-colors duration-200 mb-1">
+                {indicator.keyIndicators}
+              </div>
+              <div className="text-lg font-bold text-gray-900">
+                {getValue(indicator.ID)}
+              </div>
             </div>
           </div>
         ))}
-
-        {/* Municipalities Section */}
-        <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-100">
-          <p className="text-xs font-medium text-purple-700 mb-1">
-            {isEnglish === "EN" ? "Municipalities" : "მუნიციპალიტეტები"}
-          </p>
-          <p className="text-sm font-bold text-purple-900 mb-1">
-            {municipalNames.length}
-          </p>
-          <div className="text-xs text-purple-600 max-h-24 overflow-y-auto">
-            {municipalNames.length > 0 ? (
-              <ul className="mt-1 space-y-1">
-                {municipalNames.map((municipality, index) => (
-                  <li key={index} className="text-xs leading-tight">
-                    {isEnglish === "EN"
-                      ? municipality.nameEn
-                      : municipality.nameGe}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>
-                {isEnglish === "EN" ? "Loading..." : "იტვირთება..."}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-4 p-3 bg-gray-100 rounded-lg">
-          <p className="text-xs text-gray-600 text-center leading-tight">
-            {isEnglish === "EN"
-              ? "Data source: National Statistics Office of Georgia"
-              : "მონაცემების წყარო: საქართველოს სტატისტიკის ეროვნული სამსახური"}
-          </p>
-        </div>
       </div>
     </div>
   );
