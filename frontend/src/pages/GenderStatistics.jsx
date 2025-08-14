@@ -18,9 +18,13 @@ const GenderStatistics = () => {
     const fetchGenderData = async () => {
       try {
         setLoading(true);
+        setError(null); // Clear any previous errors
+        
+        // Determine API language parameter
+        const apiLanguage = language === 'EN' ? 'en' : 'ge';
         
         // Fetch region statistics titles from the API
-        const titlesResponse = await apiService.getRegionStatisticsTitles(language === 'EN' ? 'en' : 'ge');
+        const titlesResponse = await apiService.getRegionStatisticsTitles(apiLanguage);
         
         // If regionId is provided, fetch region data as well
         if (regionId) {

@@ -91,8 +91,10 @@ export const apiService = {
   getRegionStatisticsTitles: async (language = "ge") => {
     try {
       const baseURL = "http://192.168.1.27:8080/api";
+      // Add timestamp to prevent caching
+      const timestamp = new Date().getTime();
       const response = await fetch(
-        `${baseURL}/regionStatistics?language=${language}`
+        `${baseURL}/regionStatistics?lang=${language}&_t=${timestamp}`
       );
       const data = await response.json();
 
