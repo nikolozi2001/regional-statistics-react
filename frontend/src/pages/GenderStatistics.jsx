@@ -225,22 +225,22 @@ const GenderStatistics = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <Header />
       
       <div className="container mx-auto px-4 py-8">
         {/* Region breadcrumb or title */}
         {regionData && (
-          <div className="mb-6">
+          <div className="mb-8">
             <nav className="flex" aria-label="Breadcrumb">
-              <ol className="flex items-center space-x-2">
+              <ol className="flex items-center space-x-2 text-sm">
                 <li>
-                  <a href="/" className="text-blue-600 hover:text-blue-800">
+                  <a href="/" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
                     {language === 'EN' ? 'Home' : 'მთავარი'}
                   </a>
                 </li>
                 <li>
-                  <span className="text-gray-500">/</span>
+                  <span className="text-gray-400">/</span>
                 </li>
                 <li>
                   <span className="text-gray-900 font-medium">
@@ -248,10 +248,10 @@ const GenderStatistics = () => {
                   </span>
                 </li>
                 <li>
-                  <span className="text-gray-500">/</span>
+                  <span className="text-gray-400">/</span>
                 </li>
                 <li>
-                  <span className="text-gray-500">
+                  <span className="text-gray-600">
                     {language === 'EN' ? 'Gender Statistics' : 'გენდერული სტატისტიკა'}
                   </span>
                 </li>
@@ -260,247 +260,297 @@ const GenderStatistics = () => {
           </div>
         )}
         
+        {/* Main Title Card */}
+        <div className="mb-8">
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                {genderData?.genderTitleName}
+              </h1>
+              {regionData && (
+                <p className="text-lg text-gray-600">
+                  {regionData.NameEN && language === 'EN' ? regionData.NameEN : regionData.Name}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+        
         <div className="center">
-          <div className="max-w-4xl mx-auto">
-            <table className="w-full bg-white rounded-lg shadow-lg overflow-hidden gender_table">
-              <thead>
-                <tr className="bg-blue-600 text-white">
-                  <th className="px-6 py-4 text-center text-lg font-semibold">
-                    {genderData?.genderTitleName}
-                    {regionData && (
-                      <div className="text-sm font-normal mt-1 opacity-90">
-                        {regionData.NameEN && language === 'EN' ? regionData.NameEN : regionData.Name}
-                      </div>
-                    )}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Demographics Section */}
-                <tr>
-                  <td className="px-6 py-3 bg-gray-100 font-semibold text-gray-800" id="genderListTitle">
+          <div className="max-w-5xl mx-auto">
+            {/* Demographics Section */}
+            <div className="mb-8">
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4">
+                  <h2 className="text-xl font-semibold text-white flex items-center">
+                    <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
                     {genderData?.demograph}
-                  </td>
-                </tr>
+                  </h2>
+                </div>
                 
                 {/* Birth Statistics */}
-                <tr>
-                  <td className="px-6 py-3 bg-gray-50 font-medium text-gray-700" id="genderListTitle">
-                    {genderData?.birth[1]}
-                  </td>
-                </tr>
-                
-                {[4, 5, 6, 8].map((id) => (
-                  <tr key={`birth-${id}`} className="informacia3 border-b border-gray-200 hover:bg-gray-50">
-                    <td className="px-6 py-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-700">{genderData?.birth[id]}</span>
-                        <button
-                          onClick={() => handleExcelDownload(`linkBirths${id}`)}
-                          className="ml-4 p-1 hover:bg-gray-100 rounded transition-colors"
-                          title="Download Excel"
-                        >
-                          <img src={excelIcon} alt="excel" width="25" height="25" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                
-                {/* Death Statistics */}
-                <tr>
-                  <td className="px-6 py-3 bg-gray-50 font-medium text-gray-700" id="genderListTitle">
-                    {genderData?.death[1]}
-                  </td>
-                </tr>
-                
-                {[4, 7].map((id) => (
-                  <tr key={`death-${id}`} className="informacia4 border-b border-gray-200 hover:bg-gray-50">
-                    <td className="px-6 py-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-700">{genderData?.death[id]}</span>
-                        <button
-                          onClick={() => handleExcelDownload(`linkdeath${id}`)}
-                          className="ml-4 p-1 hover:bg-gray-100 rounded transition-colors"
-                          title="Download Excel"
-                        >
-                          <img src={excelIcon} alt="excel" width="25" height="25" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                
-                {/* Marriage Statistics */}
-                <tr>
-                  <td className="px-6 py-3 bg-gray-50 font-medium text-gray-700" id="genderListTitle">
-                    {genderData?.marriage[1]}
-                  </td>
-                </tr>
-                
-                {[4, 5].map((id) => (
-                  <tr key={`marriage-${id}`} className="informacia6 border-b border-gray-200 hover:bg-gray-50">
-                    <td className="px-6 py-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-700">{genderData?.marriage[id]}</span>
-                        <button
-                          onClick={() => handleExcelDownload(`linkmarriage${id}`)}
-                          className="ml-4 p-1 hover:bg-gray-100 rounded transition-colors"
-                          title="Download Excel"
-                        >
-                          <img src={excelIcon} alt="excel" width="25" height="25" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                
-                {/* Divorce Statistics */}
-                <tr>
-                  <td className="px-6 py-3 bg-gray-50 font-medium text-gray-700" id="genderListTitle">
-                    {genderData?.divorce[1]}
-                  </td>
-                </tr>
-                
-                <tr className="informacia7 border-b border-gray-200 hover:bg-gray-50">
-                  <td className="px-6 py-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-700">{genderData?.divorce[4]}</span>
-                      <button
-                        onClick={() => handleExcelDownload('linknumberdivorce')}
-                        className="ml-4 p-1 hover:bg-gray-100 rounded transition-colors"
-                        title="Download Excel"
-                      >
-                        <img src={excelIcon} alt="excel" width="25" height="25" />
-                      </button>
+                <div className="p-6">
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                      <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                      {genderData?.birth[1]}
+                    </h3>
+                    <div className="grid gap-3">
+                      {[4, 5, 6, 8].map((id) => (
+                        <div key={`birth-${id}`} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-200">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-700 font-medium">{genderData?.birth[id]}</span>
+                            <button
+                              onClick={() => handleExcelDownload(`linkBirths${id}`)}
+                              className="ml-4 p-2 hover:bg-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                              title="Download Excel"
+                            >
+                              <img src={excelIcon} alt="excel" width="24" height="24" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </td>
-                </tr>
-                
-                {/* Population Description */}
-                <tr>
-                  <td className="px-6 py-3 bg-gray-50 font-medium text-gray-700" id="genderListTitle">
-                    {genderData?.populationDescription[1]}
-                  </td>
-                </tr>
-                
-                {[2, 3, 4, 5, 6].map((id) => (
-                  <tr key={`population-${id}`} className="informacia8 border-b border-gray-200 hover:bg-gray-50">
-                    <td className="px-6 py-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-700">{genderData?.populationDescription[id]}</span>
-                        <button
-                          onClick={() => handleExcelDownload(`linkpopulationDescription${id}`)}
-                          className="ml-4 p-1 hover:bg-gray-100 rounded transition-colors"
-                          title="Download Excel"
-                        >
-                          <img src={excelIcon} alt="excel" width="25" height="25" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                
-                {/* Hotels and Restaurants */}
-                <tr>
-                  <td className="px-6 py-3 bg-gray-50 font-medium text-gray-700" id="genderListTitle">
-                    {genderData?.hotelsAndRestaurants[1]}
-                  </td>
-                </tr>
-                
-                <tr className="informacia18 border-b border-gray-200 hover:bg-gray-50">
-                  <td className="px-6 py-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-700">{genderData?.hotelsAndRestaurants[6]}</span>
-                      <button
-                        onClick={() => handleExcelDownload('linkhotels5')}
-                        className="ml-4 p-1 hover:bg-gray-100 rounded transition-colors"
-                        title="Download Excel"
-                      >
-                        <img src={excelIcon} alt="excel" width="25" height="25" />
-                      </button>
+                  </div>
+                  
+                  {/* Death Statistics */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                      <div className="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+                      {genderData?.death[1]}
+                    </h3>
+                    <div className="grid gap-3">
+                      {[4, 7].map((id) => (
+                        <div key={`death-${id}`} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-200">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-700 font-medium">{genderData?.death[id]}</span>
+                            <button
+                              onClick={() => handleExcelDownload(`linkdeath${id}`)}
+                              className="ml-4 p-2 hover:bg-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                              title="Download Excel"
+                            >
+                              <img src={excelIcon} alt="excel" width="24" height="24" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </td>
-                </tr>
+                  </div>
+                  
+                  {/* Marriage Statistics */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                      <div className="w-3 h-3 bg-pink-500 rounded-full mr-3"></div>
+                      {genderData?.marriage[1]}
+                    </h3>
+                    <div className="grid gap-3">
+                      {[4, 5].map((id) => (
+                        <div key={`marriage-${id}`} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-200">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-700 font-medium">{genderData?.marriage[id]}</span>
+                            <button
+                              onClick={() => handleExcelDownload(`linkmarriage${id}`)}
+                              className="ml-4 p-2 hover:bg-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                              title="Download Excel"
+                            >
+                              <img src={excelIcon} alt="excel" width="24" height="24" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Divorce Statistics */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                      <div className="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
+                      {genderData?.divorce[1]}
+                    </h3>
+                    <div className="grid gap-3">
+                      <div className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-200">
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-700 font-medium">{genderData?.divorce[4]}</span>
+                          <button
+                            onClick={() => handleExcelDownload('linknumberdivorce')}
+                            className="ml-4 p-2 hover:bg-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                            title="Download Excel"
+                          >
+                            <img src={excelIcon} alt="excel" width="24" height="24" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Population Description */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                      <div className="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
+                      {genderData?.populationDescription[1]}
+                    </h3>
+                    <div className="grid gap-3">
+                      {[2, 3, 4, 5, 6].map((id) => (
+                        <div key={`population-${id}`} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-200">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-700 font-medium">{genderData?.populationDescription[id]}</span>
+                            <button
+                              onClick={() => handleExcelDownload(`linkpopulationDescription${id}`)}
+                              className="ml-4 p-2 hover:bg-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                              title="Download Excel"
+                            >
+                              <img src={excelIcon} alt="excel" width="24" height="24" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Business & Economy Section */}
+            <div className="mb-8">
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                <div className="bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-4">
+                  <h2 className="text-xl font-semibold text-white flex items-center">
+                    <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h10m-5 4h5" />
+                    </svg>
+                    {language === 'EN' ? 'Business & Economy' : 'ბიზნესი და ეკონომიკა'}
+                  </h2>
+                </div>
                 
-                {/* Healthcare and Social Security */}
-                <tr>
-                  <td className="px-6 py-3 bg-gray-50 font-medium text-gray-700" id="genderListTitle">
+                <div className="p-6">
+                  {/* Hotels and Restaurants */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
+                      {genderData?.hotelsAndRestaurants[1]}
+                    </h3>
+                    <div className="grid gap-3">
+                      <div className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-200">
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-700 font-medium">{genderData?.hotelsAndRestaurants[6]}</span>
+                          <button
+                            onClick={() => handleExcelDownload('linkhotels5')}
+                            className="ml-4 p-2 hover:bg-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                            title="Download Excel"
+                          >
+                            <img src={excelIcon} alt="excel" width="24" height="24" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Health & Social Services Section */}
+            <div className="mb-8">
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                <div className="bg-gradient-to-r from-red-600 to-pink-600 px-6 py-4">
+                  <h2 className="text-xl font-semibold text-white flex items-center">
+                    <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
                     {genderData?.healthCareAndSocialSecurity[1]}
-                  </td>
-                </tr>
+                  </h2>
+                </div>
                 
-                <tr>
-                  <td className="px-6 py-3 bg-gray-100 font-medium text-gray-600" id="genderListTitle">
-                    {genderData?.healthCareAndSocialSecurity[2]}
-                  </td>
-                </tr>
-                
-                {[4, 7, 8, 9, 10, 11, 12].map((id) => (
-                  <tr key={`healthcare-${id}`} className="informacia9 border-b border-gray-200 hover:bg-gray-50">
-                    <td className="px-6 py-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-700">{genderData?.healthCareAndSocialSecurity[id]}</span>
-                        <button
-                          onClick={() => handleExcelDownload(`linkhealthCareAndSocialSecurity${id}`)}
-                          className="ml-4 p-1 hover:bg-gray-100 rounded transition-colors"
-                          title="Download Excel"
-                        >
-                          <img src={excelIcon} alt="excel" width="25" height="25" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                
-                <tr>
-                  <td className="px-6 py-3 bg-gray-100 font-medium text-gray-600" id="genderListTitle">
-                    {genderData?.healthCareAndSocialSecurity[14]}
-                  </td>
-                </tr>
-                
-                {[15, 20].map((id) => (
-                  <tr key={`social-${id}`} className="informacia10 border-b border-gray-200 hover:bg-gray-50">
-                    <td className="px-6 py-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-700">{genderData?.healthCareAndSocialSecurity[id]}</span>
-                        <button
-                          onClick={() => handleExcelDownload(`linkhealthCareAndSocialSecurity${id}`)}
-                          className="ml-4 p-1 hover:bg-gray-100 rounded transition-colors"
-                          title="Download Excel"
-                        >
-                          <img src={excelIcon} alt="excel" width="25" height="25" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                
-                {/* Education */}
-                <tr>
-                  <td className="px-6 py-3 bg-gray-50 font-medium text-gray-700" id="genderListTitle">
+                <div className="p-6">
+                  {/* Healthcare Services */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                      <div className="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+                      {genderData?.healthCareAndSocialSecurity[2]}
+                    </h3>
+                    <div className="grid gap-3">
+                      {[4, 7, 8, 9, 10, 11, 12].map((id) => (
+                        <div key={`healthcare-${id}`} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-200">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-700 font-medium">{genderData?.healthCareAndSocialSecurity[id]}</span>
+                            <button
+                              onClick={() => handleExcelDownload(`linkhealthCareAndSocialSecurity${id}`)}
+                              className="ml-4 p-2 hover:bg-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                              title="Download Excel"
+                            >
+                              <img src={excelIcon} alt="excel" width="24" height="24" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Social Security */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                      {genderData?.healthCareAndSocialSecurity[14]}
+                    </h3>
+                    <div className="grid gap-3">
+                      {[15, 20].map((id) => (
+                        <div key={`social-${id}`} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-200">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-700 font-medium">{genderData?.healthCareAndSocialSecurity[id]}</span>
+                            <button
+                              onClick={() => handleExcelDownload(`linkhealthCareAndSocialSecurity${id}`)}
+                              className="ml-4 p-2 hover:bg-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                              title="Download Excel"
+                            >
+                              <img src={excelIcon} alt="excel" width="24" height="24" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Education Section */}
+            <div className="mb-8">
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                <div className="bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4">
+                  <h2 className="text-xl font-semibold text-white flex items-center">
+                    <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
                     {genderData?.education[1]}
-                  </td>
-                </tr>
+                  </h2>
+                </div>
                 
-                {[3, 4].map((id) => (
-                  <tr key={`education-${id}`} className="informacia11 border-b border-gray-200 hover:bg-gray-50">
-                    <td className="px-6 py-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-700">{genderData?.education[id]}</span>
-                        <button
-                          onClick={() => handleExcelDownload(`linkeducation${id}`)}
-                          className="ml-4 p-1 hover:bg-gray-100 rounded transition-colors"
-                          title="Download Excel"
-                        >
-                          <img src={excelIcon} alt="excel" width="25" height="25" />
-                        </button>
+                <div className="p-6">
+                  <div className="grid gap-3">
+                    {[3, 4].map((id) => (
+                      <div key={`education-${id}`} className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-200">
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-700 font-medium">{genderData?.education[id]}</span>
+                          <button
+                            onClick={() => handleExcelDownload(`linkeducation${id}`)}
+                            className="ml-4 p-2 hover:bg-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                            title="Download Excel"
+                          >
+                            <img src={excelIcon} alt="excel" width="24" height="24" />
+                          </button>
+                        </div>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
