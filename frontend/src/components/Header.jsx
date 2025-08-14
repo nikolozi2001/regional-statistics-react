@@ -21,11 +21,10 @@ const DIVIDER_CLASSES = "text-gray-400 font-light mx-2 select-none";
 const FLAG_CLASSES = "w-6 h-4 object-cover rounded-sm transition-all duration-200 hover:scale-110 group-hover:brightness-110";
 
 const getComparisonButtonClasses = () => `
-  bg-[#f44336] hover:bg-[#d32f2f] 
   text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg 
   transition-all duration-300 transform hover:scale-105 active:scale-95
-  focus:outline-none focus:ring-2 focus:ring-[#f44336] focus:ring-offset-2
-  text-sm whitespace-nowrap
+  focus:outline-none focus:ring-2 focus:ring-offset-2
+  text-sm whitespace-nowrap hover:opacity-90
 `.trim();
 
 const getButtonClasses = (isActive) => `
@@ -83,6 +82,11 @@ const Header = memo(({ showBackButton = false, onBackClick = null, regionColor =
     console.log('Municipality comparison clicked');
   };
 
+  const handleGenderStatistics = () => {
+    // TODO: Implement gender statistics functionality
+    console.log('Gender statistics clicked');
+  };
+
   // Memoized values for performance
   const title = useMemo(() => {
     return language === 'EN' 
@@ -93,7 +97,8 @@ const Header = memo(({ showBackButton = false, onBackClick = null, regionColor =
   const comparisonButtons = useMemo(() => {
     return {
       regions: language === 'EN' ? 'Comparison of Regions' : 'რეგიონების შედარება',
-      municipalities: language === 'EN' ? 'Comparison of Municipalities' : 'მუნიციპალიტეტების შედარება'
+      municipalities: language === 'EN' ? 'Comparison of Municipalities' : 'მუნიციპალიტეტების შედარება',
+      genderStats: language === 'EN' ? 'Gender Statistics' : 'გენდერული სტატისტიკა'
     };
   }, [language]);
 
@@ -204,6 +209,7 @@ const Header = memo(({ showBackButton = false, onBackClick = null, regionColor =
           <div className={COMPARISON_BUTTONS_CLASSES}>
             <button 
               className={getComparisonButtonClasses()}
+              style={{ backgroundColor: regionColor }}
               onClick={handleRegionComparison}
               title={comparisonButtons.regions}
               aria-label={comparisonButtons.regions}
@@ -212,11 +218,21 @@ const Header = memo(({ showBackButton = false, onBackClick = null, regionColor =
             </button>
             <button 
               className={getComparisonButtonClasses()}
+              style={{ backgroundColor: regionColor }}
               onClick={handleMunicipalityComparison}
               title={comparisonButtons.municipalities}
               aria-label={comparisonButtons.municipalities}
             >
               {comparisonButtons.municipalities}
+            </button>
+            <button 
+              className={getComparisonButtonClasses()}
+              style={{ backgroundColor: regionColor }}
+              onClick={handleGenderStatistics}
+              title={comparisonButtons.genderStats}
+              aria-label={comparisonButtons.genderStats}
+            >
+              {comparisonButtons.genderStats}
             </button>
           </div>
         </div>
