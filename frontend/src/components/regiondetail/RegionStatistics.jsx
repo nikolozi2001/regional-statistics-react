@@ -2,34 +2,89 @@ import React, { useState, useEffect } from "react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { apiService } from "../../services/api";
 
-const RegionStatistics = ({ municipalNames }) => {
+// Mapping of region codes to region names for matching
+const regionMapping = {
+  "GE-AJ": "აჭარის ა.რ",
+  "GE-GU": "გურია",
+  "GE-IM": "იმერეთი",
+  "GE-KA": "კახეთი",
+  "GE-KK": "ქვემო ქართლი",
+  "GE-MM": "მცხეთა-მთიანეთი",
+  "GE-RL": "რაჭა-ლეჩხუმი და ქვემო სვანეთი",
+  "GE-SJ": "სამცხე-ჯავახეთი",
+  "GE-SZ": "სამეგრელო-ზემო სვანეთი",
+  "GE-SK": "შიდა ქართლი",
+  "GE-TB": "თბილისი"
+};
+
+const RegionStatistics = ({ municipalNames, regionCode }) => {
   const { isEnglish } = useLanguage();
   const [keyIndicators, setKeyIndicators] = useState([]);
+  const [regionData, setRegionData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Mapping of keyIndicator IDs to region data fields
+  const dataMapping = {
+    2: 'Area',
+    3: 'Population',
+    4: 'liveBirth',
+    5: 'death',
+    6: 'naturalIncrease',
+    7: 'GDP',
+    8: 'GDPPerCapita',
+    9: 'UnemploymentRate',
+    10: 'EmploymentRate',
+    11: 'EmploymentRateIndustry',
+    12: 'AverageSalaryIndustry',
+    13: 'RegistredEntities',
+    14: 'activeEntities',
+    15: 'newlyRegistredEntities'
+  };
+
   useEffect(() => {
-    const fetchKeyIndicators = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         const language = isEnglish === "EN" ? "en" : "ge";
-        const response = await apiService.getKeyIndicators(language);
         
-        if (response.success) {
-          setKeyIndicators(response.data);
-        } else {
-          setError("Failed to load key indicators");
+        // Fetch both APIs
+        const [indicatorsResponse, regionsResponse] = await Promise.all([
+          apiService.getKeyIndicators(language),
+          apiService.getRegionsData()
+        ]);
+        
+        if (indicatorsResponse.success) {
+          setKeyIndicators(indicatorsResponse.data);
         }
+        
+        if (regionsResponse.success && regionCode) {
+          // Find the region data based on the region code
+          const regionName = regionMapping[regionCode];
+          const currentRegion = regionsResponse.data.find(region => 
+            region.Name === regionName || region.NameEN === regionName
+          );
+          setRegionData(currentRegion);
+        }
+        
       } catch (err) {
-        console.error("Error fetching key indicators:", err);
+        console.error("Error fetching data:", err);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchKeyIndicators();
-  }, [isEnglish]);
+    fetchData();
+  }, [isEnglish, regionCode]);
+
+  // Helper function to get the value for a specific indicator
+  const getValue = (indicatorId) => {
+    if (!regionData || !dataMapping[indicatorId]) return "-";
+    const field = dataMapping[indicatorId];
+    const value = regionData[field];
+    return value || "-";
+  };
 
   if (loading) {
     return (
@@ -77,7 +132,7 @@ const RegionStatistics = ({ municipalNames }) => {
               {indicator.keyIndicators}
             </div>
             <div className="text-sm font-bold text-blue-900">
-              -
+              {getValue(indicator.ID)}
             </div>
           </div>
         ))}

@@ -63,6 +63,24 @@ export const apiService = {
       throw new Error('Error fetching key indicators data: ' + error.message);
     }
   },
+
+  // Regions Data
+  getRegionsData: async () => {
+    try {
+      const baseURL = 'http://192.168.1.27:8080/api';
+      const response = await fetch(`${baseURL}/regions`);
+      const data = await response.json();
+      
+      if (data.success) {
+        return { success: true, data: data.data };
+      } else {
+        throw new Error('Failed to load regions data');
+      }
+    } catch (error) {
+      console.error('Error fetching regions:', error);
+      throw new Error('Error fetching regions data: ' + error.message);
+    }
+  },
 };
 
 export default api;
