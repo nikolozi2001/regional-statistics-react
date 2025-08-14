@@ -6,6 +6,7 @@ import { LanguageProvider } from './contexts/LanguageContext.jsx';
 import Dashboard from './pages/Dashboard';
 import RegionDetail from './pages/RegionDetail';
 import GenderStatistics from './pages/GenderStatistics';
+import RegionComp from './components/RegionComp';
 import './App.css';
 
 const theme = createTheme({
@@ -46,6 +47,10 @@ function App() {
               <Route path="/en/gender-statistics" element={<GenderStatistics />} />
               <Route path="/ge/gender-statistics/:regionId" element={<GenderStatistics />} />
               <Route path="/en/gender-statistics/:regionId" element={<GenderStatistics />} />
+              
+              {/* Region comparison routes */}
+              <Route path="/ge/region-comparison" element={<RegionComp />} />
+              <Route path="/en/region-comparison" element={<RegionComp />} />
               
               {/* Catch all other routes and redirect to Georgian */}
               <Route path="*" element={<Navigate to="/ge" replace />} />

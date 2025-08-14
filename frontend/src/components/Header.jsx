@@ -73,8 +73,8 @@ const Header = memo(({ showBackButton = false, onBackClick = null, regionColor =
   };
 
   const handleRegionComparison = () => {
-    // TODO: Implement region comparison functionality
-    console.log('Region comparison clicked');
+    const currentLanguage = language === 'EN' ? 'en' : 'ge';
+    navigate(`/${currentLanguage}/region-comparison`);
   };
 
   const handleMunicipalityComparison = () => {
