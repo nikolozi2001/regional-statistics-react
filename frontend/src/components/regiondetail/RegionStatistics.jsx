@@ -129,16 +129,14 @@ const RegionStatistics = ({ regionCode }) => {
           .map((indicator) => (
             <div
               key={indicator.ID}
-              className="group w-full text-left rounded-xl hover:bg-gray-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-gray-100"
+              className="group w-full text-left rounded-xl hover:bg-gray-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-gray-100 p-3"
               title={indicator.dataContent}
             >
-              <div className="flex-1">
-                <div className="text-sm font-bold text-gray-700 group-hover:text-gray-900 transition-colors duration-200 mb-1">
-                  {indicator.keyIndicators}
-                </div>
-                <div className="text-sm font-bold text-gray-900">
-                  {getValue(indicator.ID)}
-                </div>
+              <div className="text-sm font-bold text-gray-700 group-hover:text-gray-900 transition-colors duration-200">
+                {indicator.keyIndicators}
+              </div>
+              <div className="text-sm font-bold text-gray-900 whitespace-nowrap">
+                {getValue(indicator.ID)}
               </div>
             </div>
           ))}
