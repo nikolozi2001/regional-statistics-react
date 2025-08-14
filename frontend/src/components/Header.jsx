@@ -24,7 +24,7 @@ const getComparisonButtonClasses = () => `
   text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg 
   transition-all duration-300 transform hover:scale-105 active:scale-95
   focus:outline-none focus:ring-2 focus:ring-offset-2
-  text-sm whitespace-nowrap hover:opacity-90
+  text-sm whitespace-nowrap hover:opacity-90 cursor-pointer
 `.trim();
 
 const getButtonClasses = (isActive) => `
@@ -50,7 +50,7 @@ const getTitleClasses = (language) => `
  * Header component with language switching and responsive design
  * Features: Dynamic logos, flag-based language switcher, accessibility support, optional back button
  */
-const Header = memo(({ showBackButton = false, onBackClick = null, regionColor = "#6b7280" }) => {
+const Header = memo(({ showBackButton = false, onBackClick = null, regionColor = "#6b7280", regionId = null }) => {
   const { language, changeLanguage } = useLanguage();
   const navigate = useNavigate();
 
@@ -83,8 +83,11 @@ const Header = memo(({ showBackButton = false, onBackClick = null, regionColor =
   };
 
   const handleGenderStatistics = () => {
-    // TODO: Implement gender statistics functionality
-    console.log('Gender statistics clicked');
+    const currentLanguage = language === 'EN' ? 'en' : 'ge';
+    const url = regionId 
+      ? `/${currentLanguage}/gender-statistics/${regionId}`
+      : `/${currentLanguage}/gender-statistics`;
+    navigate(url);
   };
 
   // Memoized values for performance
@@ -248,6 +251,7 @@ Header.propTypes = {
   showBackButton: PropTypes.bool,
   onBackClick: PropTypes.func,
   regionColor: PropTypes.string,
+  regionId: PropTypes.string,
 };
 
 export default Header;

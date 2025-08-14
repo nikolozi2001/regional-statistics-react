@@ -324,6 +324,7 @@ const RegionDetail = () => {
         showBackButton={true}
         onBackClick={handleBackClick}
         regionColor={region?.color || "#6b7280"}
+        regionId={id}
       />
 
       {/* Main Content */}

@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { LanguageProvider } from './contexts/LanguageContext.jsx';
 import Dashboard from './pages/Dashboard';
 import RegionDetail from './pages/RegionDetail';
+import GenderStatistics from './pages/GenderStatistics';
 import './App.css';
 
 const theme = createTheme({
@@ -39,6 +40,12 @@ function App() {
               {/* Region detail routes */}
               <Route path="/ge/region/:id" element={<RegionDetail />} />
               <Route path="/en/region/:id" element={<RegionDetail />} />
+              
+              {/* Gender statistics routes */}
+              <Route path="/ge/gender-statistics" element={<GenderStatistics />} />
+              <Route path="/en/gender-statistics" element={<GenderStatistics />} />
+              <Route path="/ge/gender-statistics/:regionId" element={<GenderStatistics />} />
+              <Route path="/en/gender-statistics/:regionId" element={<GenderStatistics />} />
               
               {/* Catch all other routes and redirect to Georgian */}
               <Route path="*" element={<Navigate to="/ge" replace />} />

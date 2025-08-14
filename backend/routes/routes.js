@@ -7,6 +7,7 @@ const regionsController = require("../controllers/regionsController");
 const regionalStatistics = require("../controllers/regionalStatisticsController");
 const mainInfoController = require("../controllers/mainInfoController");
 const keyIndicatorsController = require("../controllers/keyIndicatorsController");
+const genderStatisticsController = require("../controllers/genderStatisticsController");
 
 // Import validation middleware
 const { validateRegionId, validateLanguage } = require("../middleware/validate");
@@ -34,6 +35,9 @@ router.get("/regionStatistics", regionalStatistics.getRegionStatistics);
 
 // Key Indicators routes
 router.get("/keyIndicators", keyIndicatorsController.getKeyIndicators);
+
+// Gender Statistics routes
+router.get("/genderStatistics", validateLanguage, genderStatisticsController.getGenderStatistics);
 
 // Main info routes with language validation
 router.get("/mainInfo", validateLanguage, mainInfoController.getMainInfo);
