@@ -164,7 +164,7 @@ const RegionInfo = () => {
   if (loading) {
     return (
       <div className="w-1/5 bg-white rounded-lg shadow-md p-4">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        <h2 className="text-lg font-bold text-gray-800 mb-4">
           {isEnglish ? "Regional Statistics" : "რეგიონული სტატისტიკა"}
         </h2>
         <div className="text-sm text-gray-600">
@@ -180,7 +180,7 @@ const RegionInfo = () => {
   if (error) {
     return (
       <div className="w-1/5 bg-white rounded-lg shadow-md p-4">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        <h2 className="text-lg font-bold text-gray-800 mb-4">
           {isEnglish ? "Regional Statistics" : "რეგიონული სტატისტიკა"}
         </h2>
         <div className="text-sm text-red-600">{error}</div>
@@ -197,7 +197,7 @@ const RegionInfo = () => {
 
   return (
     <div className="w-1/5   rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
-      <h2 className="text-xl font-light text-gray-900 mb-6 tracking-wide">
+      <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-wide">
         {isEnglish ? "Regional Statistics" : "რეგიონული სტატისტიკა"}
       </h2>
 
@@ -214,7 +214,7 @@ const RegionInfo = () => {
                 onOpenChange={(open) => setOpenSections(prev => ({ ...prev, [key]: open }))}
               >
                 <Collapsible.Trigger className="w-full text-left py-3 px-4 rounded-xl hover:bg-gray-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-gray-100">
-                  <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{value}</span>
+                  <span className="text-sm font-bold text-gray-700 group-hover:text-gray-900 transition-colors duration-200">{value}</span>
                   {children.length > 0 ? (
                     <ChevronDownIcon 
                       className={`w-4 h-4 text-gray-400 group-hover:text-gray-600 transform transition-all duration-300 ease-out ${isOpen ? 'rotate-180' : ''}`}
@@ -251,13 +251,13 @@ const RegionInfo = () => {
                     open={openSections.demography || false} 
                     onOpenChange={(open) => setOpenSections(prev => ({ ...prev, demography: open }))}
                   >
-                    <Collapsible.Trigger className="w-full text-left py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-indigo-50/80 hover:to-purple-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-indigo-100">
-                      <span className="text-sm font-medium text-indigo-700 group-hover:text-indigo-900 transition-colors duration-200">
+                    <Collapsible.Trigger className="w-full text-left py-3 px-4 rounded-xl hover:bg-gray-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-gray-100">
+                      <span className="text-sm font-bold text-gray-700 group-hover:text-gray-900 transition-colors duration-200">
                         {isEnglish ? "Demography" : "დემოგრაფია"}
                       </span>
                       {demographicCategoriesData.length > 0 ? (
                         <ChevronDownIcon 
-                          className={`w-4 h-4 text-indigo-400 group-hover:text-indigo-600 transform transition-all duration-300 ease-out ${openSections.demography ? 'rotate-180' : ''}`}
+                          className={`w-4 h-4 text-gray-400 group-hover:text-gray-600 transform transition-all duration-300 ease-out ${openSections.demography ? 'rotate-180' : ''}`}
                         />
                       ) : (
                         <FaFileExcel 
@@ -278,12 +278,12 @@ const RegionInfo = () => {
                               open={isDemographicSubOpen} 
                               onOpenChange={(open) => setOpenSections(prev => ({ ...prev, [`demography-${demKey}`]: open }))}
                             >
-                              <div className="ml-2 border-l border-indigo-100 pl-4 group/sub">
-                                <Collapsible.Trigger className="w-full text-left py-2 px-3 rounded-lg hover:bg-indigo-50/50 transition-all duration-200 ease-out flex items-center justify-between">
-                                  <span className="text-xs font-medium text-indigo-600 group-hover/sub:text-indigo-800 transition-colors duration-200">{demValue}</span>
+                              <div className="ml-2 border-l border-gray-100 pl-4 group/sub">
+                                <Collapsible.Trigger className="w-full text-left py-2 px-3 rounded-lg hover:bg-gray-50/50 transition-all duration-200 ease-out flex items-center justify-between">
+                                  <span className="text-xs font-medium text-gray-600 group-hover/sub:text-gray-800 transition-colors duration-200">{demValue}</span>
                                   {children.length > 0 ? (
                                     <ChevronDownIcon 
-                                      className={`w-3 h-3 text-indigo-400 group-hover/sub:text-indigo-600 transform transition-all duration-200 ease-out ${isDemographicSubOpen ? 'rotate-180' : ''}`}
+                                      className={`w-3 h-3 text-gray-400 group-hover/sub:text-gray-600 transform transition-all duration-200 ease-out ${isDemographicSubOpen ? 'rotate-180' : ''}`}
                                     />
                                   ) : (
                                     <FaFileExcel 
@@ -298,7 +298,7 @@ const RegionInfo = () => {
                                       {children.map((child, index) => (
                                         <button 
                                           key={`${child.id}-${index}`}
-                                          className="w-full text-left py-1.5 px-2 rounded-md text-xs text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50/30 transition-all duration-200 ease-out group/leaf flex items-center gap-2"
+                                          className="w-full text-left py-1.5 px-2 rounded-md text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-50/30 transition-all duration-200 ease-out group/leaf flex items-center gap-2"
                                           title={child.value}
                                         >
                                           <FaFileExcel className="w-3 h-3 text-green-500 group-hover/leaf:text-green-600 transition-colors duration-200 flex-shrink-0" />
@@ -325,13 +325,13 @@ const RegionInfo = () => {
                     open={openSections.healthcare || false} 
                     onOpenChange={(open) => setOpenSections(prev => ({ ...prev, healthcare: open }))}
                   >
-                    <Collapsible.Trigger className="w-full text-left py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-green-50/80 hover:to-blue-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-green-100">
-                      <span className="text-sm font-medium text-green-700 group-hover:text-green-900 transition-colors duration-200">
+                    <Collapsible.Trigger className="w-full text-left py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-gray-50/80 hover:to-blue-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-gray-100">
+                      <span className="text-sm font-bold text-gray-700 group-hover:text-gray-900 transition-colors duration-200">
                         {isEnglish ? "Healthcare and Social Security" : "ჯანდაცვა და სოციალური უზრუნველყოფა"}
                       </span>
                       {healthcareCategoriesData.length > 0 ? (
                         <ChevronDownIcon 
-                          className={`w-4 h-4 text-green-400 group-hover:text-green-600 transform transition-all duration-300 ease-out ${openSections.healthcare ? 'rotate-180' : ''}`}
+                          className={`w-4 h-4 text-gray-400 group-hover:text-gray-600 transform transition-all duration-300 ease-out ${openSections.healthcare ? 'rotate-180' : ''}`}
                         />
                       ) : (
                         <FaFileExcel 
@@ -352,12 +352,12 @@ const RegionInfo = () => {
                               open={isHealthcareSubOpen} 
                               onOpenChange={(open) => setOpenSections(prev => ({ ...prev, [`healthcare-${hcKey}`]: open }))}
                             >
-                              <div className="ml-2 border-l border-green-100 pl-4 group/sub">
-                                <Collapsible.Trigger className="w-full text-left py-2 px-3 rounded-lg hover:bg-green-50/50 transition-all duration-200 ease-out flex items-center justify-between">
-                                  <span className="text-xs font-medium text-green-600 group-hover/sub:text-green-800 transition-colors duration-200">{hcValue}</span>
+                              <div className="ml-2 border-l border-gray-100 pl-4 group/sub">
+                                <Collapsible.Trigger className="w-full text-left py-2 px-3 rounded-lg hover:bg-gray-50/50 transition-all duration-200 ease-out flex items-center justify-between">
+                                  <span className="text-xs font-medium text-gray-600 group-hover/sub:text-gray-800 transition-colors duration-200">{hcValue}</span>
                                   {children.length > 0 ? (
                                     <ChevronDownIcon 
-                                      className={`w-3 h-3 text-green-400 group-hover/sub:text-green-600 transform transition-all duration-200 ease-out ${isHealthcareSubOpen ? 'rotate-180' : ''}`}
+                                      className={`w-3 h-3 text-gray-400 group-hover/sub:text-gray-600 transform transition-all duration-200 ease-out ${isHealthcareSubOpen ? 'rotate-180' : ''}`}
                                     />
                                   ) : (
                                     <FaFileExcel 
@@ -372,7 +372,7 @@ const RegionInfo = () => {
                                       {children.map((child, index) => (
                                         <button 
                                           key={`${child.id}-${index}`}
-                                          className="w-full text-left py-1.5 px-2 rounded-md text-xs text-green-500 hover:text-green-700 hover:bg-green-50/30 transition-all duration-200 ease-out group/leaf flex items-center gap-2"
+                                          className="w-full text-left py-1.5 px-2 rounded-md text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-50/30 transition-all duration-200 ease-out group/leaf flex items-center gap-2"
                                           title={child.value}
                                         >
                                           <FaFileExcel className="w-3 h-3 text-green-500 group-hover/leaf:text-green-600 transition-colors duration-200 flex-shrink-0" />
