@@ -45,6 +45,24 @@ export const apiService = {
       throw new Error('Error fetching statistics data: ' + error.message);
     }
   },
+
+  // Key Indicators
+  getKeyIndicators: async (language = 'ge') => {
+    try {
+      const baseURL = 'http://192.168.1.27:8080/api';
+      const response = await fetch(`${baseURL}/keyIndicators?language=${language}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        return { success: true, data: data.data };
+      } else {
+        throw new Error('Failed to load key indicators data');
+      }
+    } catch (error) {
+      console.error('Error fetching key indicators:', error);
+      throw new Error('Error fetching key indicators data: ' + error.message);
+    }
+  },
 };
 
 export default api;
