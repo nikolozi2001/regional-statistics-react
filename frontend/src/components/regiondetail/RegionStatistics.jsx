@@ -117,7 +117,7 @@ const RegionStatistics = ({ regionCode }) => {
   }
 
   return (
-    <div className="w-1/5 rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
+    <div className="w-1/4 rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
       <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-wide">
         {keyIndicators.find((item) => item.ID === 1)?.keyIndicators ||
           (isEnglish === "EN" ? "Key Indicators" : "ძირითადი მაჩვენებლები")}

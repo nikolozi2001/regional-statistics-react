@@ -345,7 +345,7 @@ const RegionDetail = () => {
             <RegionInfo />
 
             {/* Center Section (60%) - Map Display old classes rounded-lg shadow-md */}
-            <div className="w-3/5 p-4 h-full">
+            <div className="w-1/2 pt-30 h-full">
               {loading ? (
                 <div className="text-center py-20">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
