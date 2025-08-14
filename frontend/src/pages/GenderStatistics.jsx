@@ -19,36 +19,107 @@ const GenderStatistics = () => {
       try {
         setLoading(true);
         
-        // Try to fetch real data first
-        try {
-          const genderResponse = await apiService.getGenderStatistics(language === 'EN' ? 'en' : 'ge', regionId);
-          if (genderResponse.success) {
-            setGenderData(genderResponse.data);
-          }
-          
-          // If regionId is provided, fetch region data as well
-          if (regionId) {
+        // Fetch region statistics titles from the API
+        const titlesResponse = await apiService.getRegionStatisticsTitles(language === 'EN' ? 'en' : 'ge');
+        
+        // If regionId is provided, fetch region data as well
+        if (regionId) {
+          try {
             const regionsResponse = await apiService.getRegionsData();
             if (regionsResponse.success) {
               const region = regionsResponse.data.find(r => r.ID === regionId || r.code === regionId);
               setRegionData(region);
             }
+          } catch (regionError) {
+            console.warn('Could not fetch region data:', regionError);
           }
-          
-          if (genderResponse.success) {
-            return;
-          }
-        } catch (apiError) {
-          console.warn('API not available, using mock data:', apiError);
         }
         
-        // Fallback to mock data structure based on the PHP code
-        const mockData = {
+        // Create gender statistics from region statistics titles
+        const createGenderDataFromAPI = (apiData) => {
+          if (!apiData || apiData.length === 0) return null;
+          
+          // Find specific records by ID for mapping
+          const getRecordById = (id) => apiData.find(record => record.ID === id) || {};
+          
+          return {
+            regionId: regionId,
+            genderTitleName: language === 'EN' ? 'Gender Statistics' : 'გენდერული სტატისტიკა',
+            demograph: language === 'EN' ? 'Demographics' : 'დემოგრაფია',
+            birth: {
+              1: getRecordById(1).birth || (language === 'EN' ? 'Birth Statistics' : 'დაბადების სტატისტიკა'),
+              4: getRecordById(4).birth || (language === 'EN' ? 'Number of births by gender' : 'ცოცხლად დაბადებულთა რიცხოვნობა სქესის მიხედვით'),
+              5: getRecordById(5).birth || (language === 'EN' ? 'Sex ratio at birth' : 'სქესთა რაოდენობრივი თანაფარდობა დაბადებისას'),
+              6: getRecordById(6).birth || (language === 'EN' ? 'Average age of mothers' : 'დედის საშუალო ასაკი ბავშვის დაბადებისას'),
+              8: getRecordById(7).birth || (language === 'EN' ? 'Stillbirths by gender' : 'მკვდრადშობილთა რიცხოვნობა საქალაქო-სასოფლო დასახლებების მიხედვით')
+            },
+            death: {
+              1: getRecordById(1).death || (language === 'EN' ? 'Death Statistics' : 'გარდაცვალების სტატისტიკა'),
+              4: getRecordById(4).death || (language === 'EN' ? 'Deaths by age and gender' : 'გარდაცვლილთა რიცხოვნობა ასაკის და სქესის მიხედვით'),
+              7: getRecordById(7).death || (language === 'EN' ? 'Deaths by cause and gender' : 'გარდაცვლილთა რიცხოვნობა სქესის და გარდაცვალების მიზეზების ძირითადი კლასების მიხედვით')
+            },
+            marriage: {
+              1: getRecordById(1).marriage || (language === 'EN' ? 'Marriage Statistics' : 'ქორწინების სტატისტიკა'),
+              4: getRecordById(4).marriage || (language === 'EN' ? 'Marriages by age groups' : 'დაქორწინებულთა რიცხოვნობა ასაკის და სქესის მიხედვით'),
+              5: getRecordById(5).marriage || (language === 'EN' ? 'Average age at marriage' : 'ქორწინების საშუალო ასაკი სქესის მიხედვით')
+            },
+            divorce: {
+              1: getRecordById(1).divorce || (language === 'EN' ? 'Divorce Statistics' : 'განქორწინების სტატისტიკა'),
+              4: getRecordById(4).divorce || (language === 'EN' ? 'Number of divorces by age' : 'განქორწინებულთა რიცხოვნობა ასაკის და სქესის მიხედვით')
+            },
+            populationDescription: {
+              1: getRecordById(1).populationDescription || (language === 'EN' ? 'Population Description' : 'მოსახლეობის 2014 წლის აღწერა'),
+              2: getRecordById(3).populationDescription || (language === 'EN' ? 'Population by gender and age groups' : '65 წელზე მეტი ასაკის მოსახლეობის წილი (%) სქესის მიხედვით'),
+              3: getRecordById(5).populationDescription || (language === 'EN' ? 'Urban population by gender' : 'მოსახლეობის რიცხოვნობა ასაკობრივი ჯგუფების, საქალაქო-სასოფლო დასახლებების და სქესის მიხედვით'),
+              4: getRecordById(6).populationDescription || (language === 'EN' ? 'Rural population by gender' : 'შრომისუნარიანი ასაკის მოსახლეობის წილი მუნიციპალიტეტის მთლიან მოსახლეობაში (%) სქესის მიხედვით'),
+              5: getRecordById(7).populationDescription || (language === 'EN' ? 'Private households' : 'კერძო შინამეურნეობების რაოდენობა საქალაქო-სასოფლო დასახლებების და მათში მცხოვრებთა რიცხვის მიხედვით'),
+              6: language === 'EN' ? 'Life expectancy by gender' : 'სიცოცხლის ხანგრძლივობა სქესის მიხედვით'
+            },
+            hotelsAndRestaurants: {
+              1: getRecordById(1).hotelsAndRestaurants || (language === 'EN' ? 'Hotels and Restaurants' : 'სასტუმროები და რესტორნები'),
+              6: getRecordById(6).hotelsAndRestaurants || (language === 'EN' ? 'Employment in hospitality by gender' : 'სასტუმროებისა და სასტუმროს ტიპის დაწესებულებებში დასაქმებულთა რაოდენობა')
+            },
+            healthCareAndSocialSecurity: {
+              1: getRecordById(1).healthCareAndSocialSecurity || (language === 'EN' ? 'Healthcare and Social Security' : 'ჯანდაცვა და სოციალური უზრუნველყოფა'),
+              2: getRecordById(3).healthCareAndSocialSecurity || (language === 'EN' ? 'Healthcare Services' : 'ჯანმრთელობის დაცვის ძირითადი მაჩვენებლები'),
+              4: getRecordById(5).healthCareAndSocialSecurity || (language === 'EN' ? 'Anemia cases by age' : 'ანემიის ახალი შემთხვევების რაოდენობა ასაკის მიხედვით'),
+              7: getRecordById(7).healthCareAndSocialSecurity || (language === 'EN' ? 'Cancer cases by gender' : 'კიბოს ახალი შემთხვევების რაოდენობა სქესის მიხედვით'),
+              8: getRecordById(8).healthCareAndSocialSecurity || (language === 'EN' ? 'Cardiovascular diseases by gender' : 'სისხლის მიმოქცევის სისტემის ავადმყოფობების ახალ შემთხვევათა რაოდენობა სქესის მიხედვით'),
+              9: getRecordById(9).healthCareAndSocialSecurity || (language === 'EN' ? 'Respiratory diseases by gender' : 'სუნთქვის ორგანოთა ავადმყოფობების ახალ შემთხვევათა რაოდენობა სქესის მიხედვით'),
+              10: getRecordById(10).healthCareAndSocialSecurity || (language === 'EN' ? 'STD cases by gender' : 'მოსახლეობის ავადობა ათაშანგით და გონოკოკური ინფექციით სქესის მიხედვით'),
+              11: getRecordById(11).healthCareAndSocialSecurity || (language === 'EN' ? 'HIV/AIDS cases by gender' : 'აივ ინფექციის/შიდსის შემთხვევათა რაოდენობა სქესის მიხედვით'),
+              12: getRecordById(12).healthCareAndSocialSecurity || (language === 'EN' ? 'Tuberculosis cases by gender' : 'მოსახლეობის ავადობა ტუბერკულოზით სქესის მიხედვით'),
+              14: getRecordById(14).healthCareAndSocialSecurity || (language === 'EN' ? 'Social Security' : 'სოციალური უზრუნველყოვა'),
+              15: getRecordById(15).healthCareAndSocialSecurity || (language === 'EN' ? 'Social benefits indicators' : 'სოციალური უზრუნველყოფის ძირითადი მაჩვენებლები'),
+              20: getRecordById(20).healthCareAndSocialSecurity || (language === 'EN' ? 'Benefit recipients by gender' : 'ახლად რეგისტრირებულ, შშმ პირის სტატუსის საფუძვლით სახელმწიფო გასაცემლ(ებ)ის მიმღებ ბენეფიციართა რიცხოვნობა სქესისი მიხედვით')
+            },
+            education: {
+              1: getRecordById(1).education || (language === 'EN' ? 'Education' : 'განათლება'),
+              3: getRecordById(3).education || (language === 'EN' ? 'Public and private schools' : 'საჯარო და კერძო ზოგადსაგანმანათლებლო დაწესებულებები'),
+              4: getRecordById(4).education || (language === 'EN' ? 'Professional and higher education' : 'პროფესიული და უმაღლესი საგანმანათლებლო დაწესებულებები')
+            }
+          };
+        };
+
+        if (titlesResponse.success) {
+          const generatedData = createGenderDataFromAPI(titlesResponse.data);
+          setGenderData(generatedData);
+        } else {
+          throw new Error('Failed to load statistics titles');
+        }
+        
+      } catch (err) {
+        console.error('Error fetching gender statistics:', err);
+        setError(err.message);
+        
+        // Fallback to basic mock data
+        setGenderData({
+          regionId: regionId,
           genderTitleName: language === 'EN' ? 'Gender Statistics' : 'გენდერული სტატისტიკა',
           demograph: language === 'EN' ? 'Demographics' : 'დემოგრაფია',
           birth: {
             1: language === 'EN' ? 'Birth Statistics' : 'დაბადების სტატისტიკა',
-            4: language === 'EN' ? 'Number of births by age and gender' : 'დაბადების რაოდენობა ასაკისა და სქესის მიხედვით',
+            4: language === 'EN' ? 'Number of births by gender' : 'დაბადების რაოდენობა სქესის მიხედვით',
             5: language === 'EN' ? 'Sex ratio at birth' : 'სქესთა შეფარდება დაბადებისას',
             6: language === 'EN' ? 'Average age of mothers' : 'დედების საშუალო ასაკი',
             8: language === 'EN' ? 'Stillbirths by gender' : 'მკვდრად დაბადებული სქესის მიხედვით'
@@ -98,12 +169,7 @@ const GenderStatistics = () => {
             3: language === 'EN' ? 'Students by gender and education level' : 'სტუდენტები სქესისა და განათლების დონის მიხედვით',
             4: language === 'EN' ? 'Teachers by gender' : 'მასწავლებლები სქესის მიხედვით'
           }
-        };
-        
-        setGenderData(mockData);
-      } catch (err) {
-        console.error('Error fetching gender statistics:', err);
-        setError(err.message);
+        });
       } finally {
         setLoading(false);
       }

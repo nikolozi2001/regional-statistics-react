@@ -103,6 +103,24 @@ export const apiService = {
       throw new Error('Error fetching gender statistics data: ' + error.message);
     }
   },
+
+  // Region Statistics Titles
+  getRegionStatisticsTitles: async (language = 'ge') => {
+    try {
+      const baseURL = 'http://192.168.1.27:8080/api';
+      const response = await fetch(`${baseURL}/regionStatistics?language=${language}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        return { success: true, data: data.data };
+      } else {
+        throw new Error('Failed to load region statistics titles');
+      }
+    } catch (error) {
+      console.error('Error fetching region statistics titles:', error);
+      throw new Error('Error fetching region statistics titles: ' + error.message);
+    }
+  },
 };
 
 export default api;
