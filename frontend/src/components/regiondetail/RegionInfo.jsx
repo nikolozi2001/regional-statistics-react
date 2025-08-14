@@ -35,6 +35,9 @@ const RegionInfo = () => {
   // Define demographic categories that should be grouped under "დემოგრაფია"
   const demographicCategoryKeys = ['birth', 'death', 'naturalIncrease', 'marriage', 'divorce', 'populationDescription'];
 
+  // Define healthcare subcategories that should be grouped under healthcare
+  const healthcareCategoryKeys = ['healthcare', 'socialSecurity'];
+
   // Helper function to get parent categories (from first row) excluding demographic ones
   const getParentCategories = () => {
     if (statisticsData.length === 0) return [];
@@ -44,9 +47,67 @@ const RegionInfo = () => {
         key !== 'ID' && 
         value && 
         value.trim() !== '' && 
-        !demographicCategoryKeys.includes(key)
+        !demographicCategoryKeys.includes(key) &&
+        !healthcareCategoryKeys.includes(key) &&
+        key !== 'healthCareAndSocialSecurity' // Exclude the main healthcare category from normal rendering
       )
       .map(([key, value]) => ({ key, value }));
+  };
+
+  // Helper function to get healthcare subcategories
+  const getHealthcareCategories = () => {
+    if (statisticsData.length === 0) return [];
+    const firstRow = statisticsData[0];
+    return [
+      { key: 'healthcare', value: firstRow.healthCareAndSocialSecurity?.replace('ჯანდაცვა და სოციალური უზრუნველყოფა', 'ჯანდაცვა') },
+      { key: 'socialSecurity', value: firstRow.healthCareAndSocialSecurity?.replace('ჯანდაცვა და სოციალური უზრუნველყოფა', 'სოციალური უზრუნველყოფა') }
+    ].filter(item => item.value && item.value.trim() !== '');
+  };
+
+  // Helper function to get children for healthcare specifically
+  const getHealthcareChildren = () => {
+    return statisticsData
+      .slice(1) // Skip first row (parent categories)
+      .map((row, index) => ({
+        id: row.ID,
+        value: row.healthCareAndSocialSecurity,
+        rowIndex: index + 1
+      }))
+      .filter(item => 
+        item.value && 
+        item.value.trim() !== '' && 
+        (item.value.includes('ჯანმრთელობის') || 
+         item.value.includes('აბორტების') || 
+         item.value.includes('ანემიის') || 
+         item.value.includes('შაქრიანი დიაბეტის') || 
+         item.value.includes('კიბოს') || 
+         item.value.includes('სისხლის მიმოქცევის') || 
+         item.value.includes('სუნთქვის ორგანოთა') || 
+         item.value.includes('ათაშანგით') || 
+         item.value.includes('აივ ინფექციის') || 
+         item.value.includes('ტუბერკულოზით') || 
+         item.value.includes('ვირუსული ჰეპატიტით'))
+      );
+  };
+
+  // Helper function to get children for social security specifically
+  const getSocialSecurityChildren = () => {
+    return statisticsData
+      .slice(1) // Skip first row (parent categories)
+      .map((row, index) => ({
+        id: row.ID,
+        value: row.healthCareAndSocialSecurity,
+        rowIndex: index + 1
+      }))
+      .filter(item => 
+        item.value && 
+        item.value.trim() !== '' && 
+        (item.value.includes('სოციალური უზრუნველყოფის') || 
+         item.value.includes('დევნილის სტატუსის') || 
+         item.value.includes('მიზნობრივი სოციალური') || 
+         item.value.includes('სოციალური პაკეტის') || 
+         item.value.includes('ახლად რეგისტრირებულ'))
+      );
   };
 
   // Helper function to get demographic categories
@@ -102,6 +163,7 @@ const RegionInfo = () => {
 
   const parentCategories = getParentCategories();
   const demographicCategoriesData = getDemographicCategories();
+  const healthcareCategoriesData = getHealthcareCategories();
 
   return (
     <div className="w-1/5 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
@@ -207,6 +269,80 @@ const RegionInfo = () => {
                                         <button 
                                           key={`${child.id}-${index}`}
                                           className="w-full text-left py-1.5 px-2 rounded-md text-xs text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50/30 transition-all duration-200 ease-out group/leaf flex items-center gap-2"
+                                          title={child.value}
+                                        >
+                                          <FaFileExcel className="w-3 h-3 text-green-500 group-hover/leaf:text-green-600 transition-colors duration-200 flex-shrink-0" />
+                                          <span className="block truncate group-hover/leaf:font-medium transition-all duration-200">{child.value}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </Collapsible.Content>
+                                )}
+                              </div>
+                            </Collapsible.Root>
+                          );
+                        })}
+                      </div>
+                    </Collapsible.Content>
+                  </Collapsible.Root>
+                </div>
+              )}
+
+              {/* Insert Healthcare Section after Legal Statistics */}
+              {key === 'legalStatistics' && healthcareCategoriesData.length > 0 && (
+                <div className="mt-2 group">
+                  <Collapsible.Root 
+                    open={openSections.healthcare || false} 
+                    onOpenChange={(open) => setOpenSections(prev => ({ ...prev, healthcare: open }))}
+                  >
+                    <Collapsible.Trigger className="w-full text-left py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-green-50/80 hover:to-blue-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-green-100">
+                      <span className="text-sm font-medium text-green-700 group-hover:text-green-900 transition-colors duration-200">
+                        ჯანდაცვა და სოციალური უზრუნველყოფა
+                      </span>
+                      {healthcareCategoriesData.length > 0 ? (
+                        <ChevronDownIcon 
+                          className={`w-4 h-4 text-green-400 group-hover:text-green-600 transform transition-all duration-300 ease-out ${openSections.healthcare ? 'rotate-180' : ''}`}
+                        />
+                      ) : (
+                        <FaFileExcel 
+                          className="w-4 h-4 text-green-500 group-hover:text-green-600 transition-colors duration-200"
+                        />
+                      )}
+                    </Collapsible.Trigger>
+
+                    <Collapsible.Content className="overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
+                      <div className="px-4 pb-2 space-y-1">
+                        {healthcareCategoriesData.map(({ key: hcKey, value: hcValue }) => {
+                          const children = hcKey === 'healthcare' ? getHealthcareChildren() : getSocialSecurityChildren();
+                          const isHealthcareSubOpen = openSections[`healthcare-${hcKey}`] || false;
+
+                          return (
+                            <Collapsible.Root 
+                              key={`healthcare-${hcKey}`}
+                              open={isHealthcareSubOpen} 
+                              onOpenChange={(open) => setOpenSections(prev => ({ ...prev, [`healthcare-${hcKey}`]: open }))}
+                            >
+                              <div className="ml-2 border-l border-green-100 pl-4 group/sub">
+                                <Collapsible.Trigger className="w-full text-left py-2 px-3 rounded-lg hover:bg-green-50/50 transition-all duration-200 ease-out flex items-center justify-between">
+                                  <span className="text-xs font-medium text-green-600 group-hover/sub:text-green-800 transition-colors duration-200">{hcValue}</span>
+                                  {children.length > 0 ? (
+                                    <ChevronDownIcon 
+                                      className={`w-3 h-3 text-green-400 group-hover/sub:text-green-600 transform transition-all duration-200 ease-out ${isHealthcareSubOpen ? 'rotate-180' : ''}`}
+                                    />
+                                  ) : (
+                                    <FaFileExcel 
+                                      className="w-3 h-3 text-green-500 group-hover:text-green-600 transition-colors duration-200"
+                                    />
+                                  )}
+                                </Collapsible.Trigger>
+                                
+                                {children.length > 0 && (
+                                  <Collapsible.Content className="overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
+                                    <div className="pl-2 space-y-1 mt-1">
+                                      {children.map((child, index) => (
+                                        <button 
+                                          key={`${child.id}-${index}`}
+                                          className="w-full text-left py-1.5 px-2 rounded-md text-xs text-green-500 hover:text-green-700 hover:bg-green-50/30 transition-all duration-200 ease-out group/leaf flex items-center gap-2"
                                           title={child.value}
                                         >
                                           <FaFileExcel className="w-3 h-3 text-green-500 group-hover/leaf:text-green-600 transition-colors duration-200 flex-shrink-0" />
