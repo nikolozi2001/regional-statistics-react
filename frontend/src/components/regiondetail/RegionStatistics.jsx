@@ -14,7 +14,7 @@ const regionMapping = {
   "GE-SJ": "სამცხე-ჯავახეთი",
   "GE-SZ": "სამეგრელო-ზემო სვანეთი",
   "GE-SK": "შიდა ქართლი",
-  "GE-TB": "თბილისი"
+  "GE-TB": "თბილისი",
 };
 
 const RegionStatistics = ({ regionCode }) => {
@@ -26,20 +26,20 @@ const RegionStatistics = ({ regionCode }) => {
 
   // Mapping of keyIndicator IDs to region data fields
   const dataMapping = {
-    2: 'Area',
-    3: 'Population',
-    4: 'liveBirth',
-    5: 'death',
-    6: 'naturalIncrease',
-    7: 'GDP',
-    8: 'GDPPerCapita',
-    9: 'UnemploymentRate',
-    10: 'EmploymentRate',
-    11: 'EmploymentRateIndustry',
-    12: 'AverageSalaryIndustry',
-    13: 'RegistredEntities',
-    14: 'activeEntities',
-    15: 'newlyRegistredEntities'
+    2: "Area",
+    3: "Population",
+    4: "liveBirth",
+    5: "death",
+    6: "naturalIncrease",
+    7: "GDP",
+    8: "GDPPerCapita",
+    9: "UnemploymentRate",
+    10: "EmploymentRate",
+    11: "EmploymentRateIndustry",
+    12: "AverageSalaryIndustry",
+    13: "RegistredEntities",
+    14: "activeEntities",
+    15: "newlyRegistredEntities",
   };
 
   useEffect(() => {
@@ -47,26 +47,26 @@ const RegionStatistics = ({ regionCode }) => {
       try {
         setLoading(true);
         const language = isEnglish === "EN" ? "en" : "ge";
-        
+
         // Fetch both APIs
         const [indicatorsResponse, regionsResponse] = await Promise.all([
           apiService.getKeyIndicators(language),
-          apiService.getRegionsData()
+          apiService.getRegionsData(),
         ]);
-        
+
         if (indicatorsResponse.success) {
           setKeyIndicators(indicatorsResponse.data);
         }
-        
+
         if (regionsResponse.success && regionCode) {
           // Find the region data based on the region code
           const regionName = regionMapping[regionCode];
-          const currentRegion = regionsResponse.data.find(region => 
-            region.Name === regionName || region.NameEN === regionName
+          const currentRegion = regionsResponse.data.find(
+            (region) =>
+              region.Name === regionName || region.NameEN === regionName
           );
           setRegionData(currentRegion);
         }
-        
       } catch (err) {
         console.error("Error fetching data:", err);
         setError(err.message);
@@ -108,36 +108,40 @@ const RegionStatistics = ({ regionCode }) => {
           {isEnglish === "EN" ? "Key Indicators" : "ძირითადი მაჩვენებლები"}
         </h2>
         <div className="text-red-500 text-sm font-medium bg-red-50 p-3 rounded-lg">
-          {isEnglish === "EN" ? "Error loading data" : "მონაცემების ჩატვირთვის შეცდომა"}
+          {isEnglish === "EN"
+            ? "Error loading data"
+            : "მონაცემების ჩატვირთვის შეცდომა"}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-1/5 rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6 max-h-screen overflow-y-auto">
+    <div className="w-1/5 rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
       <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-wide">
-        {keyIndicators.find(item => item.ID === 1)?.keyIndicators || 
-         (isEnglish === "EN" ? "Key Indicators" : "ძირითადი მაჩვენებლები")}
+        {keyIndicators.find((item) => item.ID === 1)?.keyIndicators ||
+          (isEnglish === "EN" ? "Key Indicators" : "ძირითადი მაჩვენებლები")}
       </h2>
 
       <div className="space-y-1">
-        {keyIndicators.filter(item => item.ID !== 1).map((indicator) => (
-          <div 
-            key={indicator.ID} 
-            className="group w-full text-left py-3 px-4 rounded-xl hover:bg-gray-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-gray-100"
-            title={indicator.dataContent}
-          >
-            <div className="flex-1">
-              <div className="text-sm font-bold text-gray-700 group-hover:text-gray-900 transition-colors duration-200 mb-1">
-                {indicator.keyIndicators}
-              </div>
-              <div className="text-lg font-bold text-gray-900">
-                {getValue(indicator.ID)}
+        {keyIndicators
+          .filter((item) => item.ID !== 1)
+          .map((indicator) => (
+            <div
+              key={indicator.ID}
+              className="group w-full text-left rounded-xl hover:bg-gray-50/80 transition-all duration-300 ease-out flex items-center justify-between group-hover:shadow-sm border border-transparent hover:border-gray-100"
+              title={indicator.dataContent}
+            >
+              <div className="flex-1">
+                <div className="text-sm font-bold text-gray-700 group-hover:text-gray-900 transition-colors duration-200 mb-1">
+                  {indicator.keyIndicators}
+                </div>
+                <div className="text-sm font-bold text-gray-900">
+                  {getValue(indicator.ID)}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
