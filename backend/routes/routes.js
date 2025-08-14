@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 // Import controllers
-const regionsController = require("../controllers/regionsController");
-const indicatorsController = require("../controllers/indicatorsController");
-const mainInfoController = require("../controllers/mainInfoController");
 const { healthCheck } = require("../controllers/healthController");
+const regionsController = require("../controllers/regionsController");
+const regionalStatistics = require("../controllers/regionalStatisticsController");
+const mainInfoController = require("../controllers/mainInfoController");
+const keyIndicatorsController = require("../controllers/keyIndicatorsController");
 
 // Import validation middleware
 const { validateRegionId, validateLanguage } = require("../middleware/validate");
@@ -28,8 +29,11 @@ router.get("/regions/:id/statistics", validateRegionId, regionsController.getReg
 // Statistics routes
 router.get("/statistics", regionsController.getAllStatistics);
 
-// Indicators routes
-router.get("/regionStatistics", indicatorsController.getRegionStatistics);
+// Regional Statistics routes
+router.get("/regionStatistics", regionalStatistics.getRegionStatistics);
+
+// Key Indicators routes
+router.get("/keyIndicators", keyIndicatorsController.getKeyIndicators);
 
 // Main info routes with language validation
 router.get("/mainInfo", validateLanguage, mainInfoController.getMainInfo);
