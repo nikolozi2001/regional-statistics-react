@@ -12,58 +12,62 @@ const MunicipalComp = () => {
   const [selectedIndicators, setSelectedIndicators] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Convert language format for API and UI comparisons
+  const isEnglish = language === "EN";
+  const apiLanguage = language === "EN" ? "en" : "ge";
+
   // Define available indicators based on your table structure
   const indicators = [
-    { value: "area", label: language === "en" ? "Area" : "ფართობი" },
+    { value: "area", label: isEnglish ? "Area" : "ფართობი" },
     {
       value: "population",
-      label: language === "en" ? "Population" : "მოსახლეობა",
+      label: isEnglish ? "Population" : "მოსახლეობა",
     },
-    { value: "villages", label: language === "en" ? "Villages" : "სოფლები" },
+    { value: "villages", label: isEnglish ? "Villages" : "სოფლები" },
     {
       value: "liveBirths",
-      label: language === "en" ? "Live Births" : "ცოცხლად დაბადებული",
+      label: isEnglish ? "Live Births" : "ცოცხლად დაბადებული",
     },
     {
       value: "generalBirthRate",
-      label: language === "en" ? "Birth Rate" : "შობადობის კოეფიციენტი",
+      label: isEnglish ? "Birth Rate" : "შობადობის კოეფიციენტი",
     },
-    { value: "dead", label: language === "en" ? "Deaths" : "გარდაცვლილი" },
+    { value: "dead", label: isEnglish ? "Deaths" : "გარდაცვლილი" },
     {
       value: "generalMortalityRate",
       label:
-        language === "en" ? "Mortality Rate" : "სიკვდილიანობის კოეფიციენტი",
+        isEnglish ? "Mortality Rate" : "სიკვდილიანობის კოეფიციენტი",
     },
     {
       value: "naturalIncrease",
-      label: language === "en" ? "Natural Increase" : "ბუნებრივი მატება",
+      label: isEnglish ? "Natural Increase" : "ბუნებრივი მატება",
     },
     {
       value: "employees",
-      label: language === "en" ? "Employees" : "დასაქმებულები",
+      label: isEnglish ? "Employees" : "დასაქმებულები",
     },
     {
       value: "avgSalary",
-      label: language === "en" ? "Average Salary" : "საშუალო ხელფასი",
+      label: isEnglish ? "Average Salary" : "საშუალო ხელფასი",
     },
     {
       value: "regEcSub",
       label:
-        language === "en"
+        isEnglish
           ? "Registered Economic Subjects"
           : "რეგისტრირებული ეკონომიკური სუბიექტები",
     },
     {
       value: "actEcSub",
       label:
-        language === "en"
+        isEnglish
           ? "Active Economic Subjects"
           : "მოქმედი ეკონომიკური სუბიექტები",
     },
     {
       value: "newlyEcEnt",
       label:
-        language === "en"
+        isEnglish
           ? "Newly Registered Entities"
           : "ახლად რეგისტრირებული სუბიექტები",
     },
@@ -73,7 +77,7 @@ const MunicipalComp = () => {
     const fetchMunicipalities = async () => {
       try {
         setLoading(true);
-        const response = await apiService.getMunicipalities(language);
+        const response = await apiService.getMunicipalities(apiLanguage);
         if (response.success) {
           setMunicipalities(response.data);
           // Clear selections when language changes
@@ -90,12 +94,12 @@ const MunicipalComp = () => {
     };
 
     fetchMunicipalities();
-  }, [language]);
+  }, [language, apiLanguage]);
 
   const handleCompare = () => {
     if (selectedMunicipalityIds.length < 2) {
       toast.error(
-        language === "en"
+        isEnglish
           ? "Please select at least 2 municipalities"
           : "გთხოვთ აირჩიოთ მინიმუმ 2 მუნიციპალიტეტი"
       );
@@ -104,7 +108,7 @@ const MunicipalComp = () => {
 
     if (selectedIndicators.length === 0) {
       toast.error(
-        language === "en"
+        isEnglish
           ? "Please select at least one indicator"
           : "გთხოვთ აირჩიოთ მინიმუმ ერთი ინდიკატორი"
       );
@@ -120,7 +124,7 @@ const MunicipalComp = () => {
     <div className="p-6">
       <Header />
       <h1 className="text-2xl font-bold mb-6">
-        {language === "en"
+        {isEnglish
           ? "Municipal Comparison"
           : "მუნიციპალიტეტების შედარება"}
       </h1>
@@ -128,7 +132,7 @@ const MunicipalComp = () => {
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="w-full md:w-1/2">
           <h2 className="text-lg font-semibold mb-2">
-            {language === "en"
+            {isEnglish
               ? "Select Municipalities"
               : "აირჩიეთ მუნიციპალიტეტები"}
           </h2>
@@ -159,19 +163,19 @@ const MunicipalComp = () => {
             }
             placeholder={
               loading
-                ? language === "en"
+                ? isEnglish
                   ? "Loading..."
                   : "იტვირთება..."
-                : language === "en"
+                : isEnglish
                 ? "Select municipalities"
                 : "აირჩიეთ მუნიციპალიტეტები"
             }
             noOptionsMessage={() =>
               loading
-                ? language === "en"
+                ? isEnglish
                   ? "Loading..."
                   : "იტვირთება..."
-                : language === "en"
+                : isEnglish
                 ? "No municipalities found"
                 : "მუნიციპალიტეტები არ მოიძებნა"
             }
@@ -180,7 +184,7 @@ const MunicipalComp = () => {
 
         <div className="w-full md:w-1/2">
           <h2 className="text-lg font-semibold mb-2">
-            {language === "en" ? "Select Indicators" : "აირჩიეთ ინდიკატორები"}
+            {isEnglish ? "Select Indicators" : "აირჩიეთ ინდიკატორები"}
           </h2>
           <Select
             isMulti
@@ -188,10 +192,10 @@ const MunicipalComp = () => {
             value={selectedIndicators}
             onChange={setSelectedIndicators}
             placeholder={
-              language === "en" ? "Select indicators" : "აირჩიეთ ინდიკატორები"
+              isEnglish ? "Select indicators" : "აირჩიეთ ინდიკატორები"
             }
             noOptionsMessage={() =>
-              language === "en"
+              isEnglish
                 ? "No indicators found"
                 : "ინდიკატორები არ მოიძებნა"
             }
@@ -204,7 +208,7 @@ const MunicipalComp = () => {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         disabled={loading}
       >
-        {language === "en" ? "Compare" : "შედარება"}
+        {isEnglish ? "Compare" : "შედარება"}
       </button>
     </div>
   );
