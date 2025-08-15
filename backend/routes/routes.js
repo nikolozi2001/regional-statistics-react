@@ -7,6 +7,7 @@ const regionsController = require("../controllers/regionsController");
 const regionalStatistics = require("../controllers/regionalStatisticsController");
 const mainInfoController = require("../controllers/mainInfoController");
 const keyIndicatorsController = require("../controllers/keyIndicatorsController");
+const municipalitiesController = require("../controllers/municipalitiesController");
 
 // Import validation middleware
 const {
@@ -44,5 +45,8 @@ router.get("/keyIndicators", keyIndicatorsController.getKeyIndicators);
 
 // Main info routes with language validation
 router.get("/mainInfo", validateLanguage, mainInfoController.getMainInfo);
+
+// Municipalities routes
+router.get("/municipalities", municipalitiesController.getAllMunicipalities);
 
 module.exports = router;

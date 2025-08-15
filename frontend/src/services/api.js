@@ -110,6 +110,55 @@ export const apiService = {
       );
     }
   },
+  // Municipalities
+  getMunicipalities: async (lang = "ge") => {
+    try {
+      const baseURL = "http://192.168.1.27:8080/api";
+      const response = await fetch(`${baseURL}/municipalities?lang=${lang}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to load municipalities data");
+      }
+
+      // Backend now returns 'name' field with the correct language
+      const formattedData = data.data.map((element) => ({
+        id: element.ID,
+        name: element.name, // This will be in the correct language
+        nameGe: element.nameGe,
+        nameEn: element.nameEn,
+        area: element.Area,
+        numberOfCT: element.NumberOfCT,
+        villages: element.Villages,
+        population: element.Population,
+        liveBirths: element.LiveBirths,
+        generalBirthRate: element.GeneralBirthRate,
+        dead: element.Dead,
+        generalMortalityRate: element.GeneralMortalityRate,
+        naturalIncrease: element.NaturalIncrease,
+        employees: element.Employees,
+        avgSalary: element.AVGSalary,
+        regEcSub: element.RegEcSub,
+        actEcSub: element.ActEcSub,
+        newlyEcEnt: element.NewlyEcEnt,
+      }));
+
+      console.log("Municipalities loaded:", formattedData);
+
+      return {
+        success: true,
+        data: formattedData,
+      };
+    } catch (error) {
+      console.error("Error fetching municipalities:", error);
+      throw new Error(`Error fetching municipalities data: ${error.message}`);
+    }
+  },
 };
 
 export default api;
