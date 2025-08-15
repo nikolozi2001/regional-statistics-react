@@ -108,9 +108,7 @@ const RegionStatistics = ({ regionCode }) => {
           {isEnglish ? "Key Indicators" : "ძირითადი მაჩვენებლები"}
         </h2>
         <div className="text-red-500 text-sm font-medium bg-red-50 p-3 rounded-lg">
-          {isEnglish
-            ? "Error loading data"
-            : "მონაცემების ჩატვირთვის შეცდომა"}
+          {isEnglish ? "Error loading data" : "მონაცემების ჩატვირთვის შეცდომა"}
         </div>
       </div>
     );
@@ -133,7 +131,9 @@ const RegionStatistics = ({ regionCode }) => {
               title={indicator.dataContent}
             >
               <div className="text-sm font-bold text-gray-700 group-hover:text-gray-900 transition-colors duration-200">
-                {indicator.keyIndicators}
+                {isEnglish
+                  ? indicator.keyIndicatorsEn
+                  : indicator.keyIndicators}
               </div>
               <div className="text-sm font-bold text-gray-900 whitespace-nowrap">
                 {getValue(indicator.ID)}

@@ -5,12 +5,13 @@ const { catchAsync, AppError } = require("../middleware/errorHandler");
 const getKeyIndicators = catchAsync(async (req, res) => {
   const lang = req.query.lang || "ge";
   const table = lang === "en" ? "key_indicators_en" : "key_indicators";
+  const column = lang === "en" ? "keyIndicatorsEn" : "keyIndicators";
 
   logger.info(`GET /api/keyIndicators - Language: ${lang}`);
 
   // Query the regions table for actual regional statistics data
   const query = `
-    SELECT ID, keyIndicators, dataContent from ${table}
+    SELECT ID, ${column}, dataContent from ${table}
   `;
 
   const [rows] = await pool.execute(query);

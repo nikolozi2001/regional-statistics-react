@@ -50,15 +50,16 @@ export const apiService = {
   },
 
   // Key Indicators
-  getKeyIndicators: async (language = "ge") => {
+  getKeyIndicators: async (lang = "ge") => {
     try {
       const baseURL = "http://192.168.1.27:8080/api";
       const response = await fetch(
-        `${baseURL}/keyIndicators?language=${language}`
+        `${baseURL}/keyIndicators?lang=${lang}`
       );
       const data = await response.json();
 
       if (data.success) {
+        // console.log("Key Indicators loaded:", data.data);
         return { success: true, data: data.data };
       } else {
         throw new Error("Failed to load key indicators data");
