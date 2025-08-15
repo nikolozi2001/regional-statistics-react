@@ -3,6 +3,7 @@ import { useLanguage } from "../hooks/useLanguage";
 import Select from "react-select";
 import toast from "react-hot-toast";
 import ExcelJS from "exceljs";
+import Header from "./Header";
 import geoMapsImage from "../assets/images/reg_photos/geomaps.png";
 import chartsImage from "../assets/images/reg_photos/1612523122750-Charts.jpg";
 import excelIcon from "../assets/excel.png";
@@ -15,6 +16,9 @@ const RegionComp = () => {
   const [comparisonData, setComparisonData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showTable, setShowTable] = useState(false);
+
+  console.log(regions);
+  console.log(selectedIndicators);
 
   // Translations
   const translations = {
@@ -461,14 +465,11 @@ const RegionComp = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Header */}
-      <div className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200">
-        <div className="container mx-auto px-4 py-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 text-center">
-            {t.pageTitle}
-          </h1>
-        </div>
-      </div>
+      {/* Header Component */}
+      <Header 
+        title={t.pageTitle}
+        showComparisonButtons={false}
+      />
 
       <div className="container mx-auto px-4 py-8">
         {/* Selection Controls */}
