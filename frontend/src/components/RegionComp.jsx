@@ -89,12 +89,21 @@ const RegionComp = () => {
       "newlyRegistered",
     ];
 
-    return indicatorKeys.map((key, index) => ({
+    const options = indicatorKeys.map((key, index) => ({
       value: index + 1,
       label: t[key],
       key: key,
     }));
-  }, [t]);
+
+    // Add "Select All" option at the beginning
+    return [
+      {
+        value: "all",
+        label: language === "EN" ? "Select All" : "ყველას არჩევა",
+      },
+      ...options,
+    ];
+  }, [t, language]);
 
   // Fetch regions data
   useEffect(() => {
@@ -112,10 +121,19 @@ const RegionComp = () => {
 
           // Sort regions alphabetically by label
           const sortedRegions = regionsData.sort((a, b) =>
-            a.label.localeCompare(b.label, language === "GE" ? "ge" : "en")
+            a.label.localeCompare(b.label, language === "GE" ? "ka" : "en")
           );
 
-          setRegions(sortedRegions);
+          // Add "Select All" option at the beginning
+          const regionsWithSelectAll = [
+            {
+              value: "all",
+              label: language === "EN" ? "Select All" : "ყველას არჩევა",
+            },
+            ...sortedRegions,
+          ];
+
+          setRegions(regionsWithSelectAll);
         } else {
           throw new Error("Failed to fetch regions");
         }
@@ -162,15 +180,82 @@ const RegionComp = () => {
 
         // Sort fallback regions alphabetically by label
         const sortedFallbackRegions = fallbackRegions.sort((a, b) =>
-          a.label.localeCompare(b.label, language === "GE" ? "ge" : "en")
+          a.label.localeCompare(b.label, language === "GE" ? "ka" : "en")
         );
 
-        setRegions(sortedFallbackRegions);
+        // Add "Select All" option at the beginning
+        const fallbackWithSelectAll = [
+          {
+            value: "all",
+            label: language === "EN" ? "Select All" : "ყველას არჩევა",
+          },
+          ...sortedFallbackRegions,
+        ];
+
+        setRegions(fallbackWithSelectAll);
       }
     };
 
     fetchRegions();
   }, [language]);
+
+  // Handle region selection with "Select All" functionality
+  const handleRegionChange = (selected) => {
+    if (!selected || selected.length === 0) {
+      setSelectedRegions([]);
+      return;
+    }
+
+    const selectAllOption = selected.find((option) => option.value === "all");
+    const previousSelectAll = selectedRegions.find(
+      (option) => option.value === "all"
+    );
+
+    if (selectAllOption && !previousSelectAll) {
+      // "Select All" was just selected - select all regions except the "Select All" option itself
+      const allRegions = regions.filter((region) => region.value !== "all");
+      setSelectedRegions(allRegions);
+    } else if (!selectAllOption && previousSelectAll) {
+      // "Select All" was just deselected - clear all
+      setSelectedRegions([]);
+    } else {
+      // Normal selection - filter out the "Select All" option
+      const filteredSelection = selected.filter(
+        (option) => option.value !== "all"
+      );
+      setSelectedRegions(filteredSelection);
+    }
+  };
+
+  // Handle indicator selection with "Select All" functionality
+  const handleIndicatorChange = (selected) => {
+    if (!selected || selected.length === 0) {
+      setSelectedIndicators([]);
+      return;
+    }
+
+    const selectAllOption = selected.find((option) => option.value === "all");
+    const previousSelectAll = selectedIndicators.find(
+      (option) => option.value === "all"
+    );
+
+    if (selectAllOption && !previousSelectAll) {
+      // "Select All" was just selected - select all indicators except the "Select All" option itself
+      const allIndicators = keyIndicatorOptions.filter(
+        (indicator) => indicator.value !== "all"
+      );
+      setSelectedIndicators(allIndicators);
+    } else if (!selectAllOption && previousSelectAll) {
+      // "Select All" was just deselected - clear all
+      setSelectedIndicators([]);
+    } else {
+      // Normal selection - filter out the "Select All" option
+      const filteredSelection = selected.filter(
+        (option) => option.value !== "all"
+      );
+      setSelectedIndicators(filteredSelection);
+    }
+  };
 
   // Handle search/comparison
   const handleSearch = async () => {
@@ -217,8 +302,9 @@ const RegionComp = () => {
       const row = [indicator.label];
 
       selectedRegions.forEach((region) => {
+        // Find the region data, excluding the "Select All" option
         const regionData = allRegionsData.find(
-          (item) => item.value === region.value
+          (item) => item.value === region.value && item.value !== "all"
         );
         if (regionData) {
           // Map indicator to field name and get value
@@ -322,6 +408,24 @@ const RegionComp = () => {
         color: "white",
       },
     }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor:
+        state.data.value === "all"
+          ? state.isFocused
+            ? "#e0e7ff"
+            : "#f3f4f6"
+          : state.isFocused
+          ? "#e0e7ff"
+          : "white",
+      color: state.data.value === "all" ? "#4c51bf" : "#374151",
+      fontWeight: state.data.value === "all" ? "600" : "400",
+      borderBottom: state.data.value === "all" ? "1px solid #e5e7eb" : "none",
+      cursor: "pointer",
+      "&:hover": {
+        backgroundColor: state.data.value === "all" ? "#e0e7ff" : "#f3f4f6",
+      },
+    }),
   };
 
   return (
@@ -349,7 +453,7 @@ const RegionComp = () => {
                   isMulti
                   options={regions}
                   value={selectedRegions}
-                  onChange={setSelectedRegions}
+                  onChange={handleRegionChange}
                   placeholder={t.selectOptions}
                   styles={selectStyles}
                   className="text-left"
@@ -375,7 +479,7 @@ const RegionComp = () => {
                   isMulti
                   options={keyIndicatorOptions}
                   value={selectedIndicators}
-                  onChange={setSelectedIndicators}
+                  onChange={handleIndicatorChange}
                   placeholder={t.selectOptions}
                   styles={selectStyles}
                   className="text-left"
