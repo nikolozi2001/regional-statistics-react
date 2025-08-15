@@ -148,7 +148,7 @@ export const apiService = {
         newlyEcEnt: element.NewlyEcEnt,
       }));
 
-      console.log("Municipalities loaded:", formattedData);
+      // console.log("Municipalities loaded:", formattedData);
 
       return {
         success: true,
