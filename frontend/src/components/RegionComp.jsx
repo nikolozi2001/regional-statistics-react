@@ -11,11 +11,18 @@ import excelIcon from "../assets/excel.png";
 const RegionComp = () => {
   const { language } = useLanguage();
   const [regions, setRegions] = useState([]);
-  const [selectedRegions, setSelectedRegions] = useState([]);
+  const [selectedRegionIds, setSelectedRegionIds] = useState([]); // Store only IDs
   const [selectedIndicators, setSelectedIndicators] = useState([]);
   const [comparisonData, setComparisonData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showTable, setShowTable] = useState(false);
+
+  // Compute selected regions from IDs and current regions list
+  const selectedRegions = useMemo(() => {
+    return selectedRegionIds.map(id => 
+      regions.find(region => region.value === id)
+    ).filter(Boolean);
+  }, [selectedRegionIds, regions]);
 
   console.log(regions);
   console.log(selectedIndicators);
@@ -158,10 +165,17 @@ const RegionComp = () => {
     fetchRegions();
   }, [language]);
 
+  // Update selected regions labels when language/regions change
+  useEffect(() => {
+    // Clear comparison data when language changes to force refresh
+    setComparisonData([]);
+    setShowTable(false);
+  }, [language]);
+
   // Handle region selection with "Select All" functionality
   const handleRegionChange = (selected) => {
     if (!selected || selected.length === 0) {
-      setSelectedRegions([]);
+      setSelectedRegionIds([]);
       return;
     }
 
@@ -172,17 +186,17 @@ const RegionComp = () => {
 
     if (selectAllOption && !previousSelectAll) {
       // "Select All" was just selected - select all regions except the "Select All" option itself
-      const allRegions = regions.filter((region) => region.value !== "all");
-      setSelectedRegions(allRegions);
+      const allRegionIds = regions.filter((region) => region.value !== "all").map(region => region.value);
+      setSelectedRegionIds(allRegionIds);
     } else if (!selectAllOption && previousSelectAll) {
       // "Select All" was just deselected - clear all
-      setSelectedRegions([]);
+      setSelectedRegionIds([]);
     } else {
-      // Normal selection - filter out the "Select All" option
+      // Normal selection - filter out the "Select All" option and store IDs
       const filteredSelection = selected.filter(
         (option) => option.value !== "all"
-      );
-      setSelectedRegions(filteredSelection);
+      ).map(option => option.value);
+      setSelectedRegionIds(filteredSelection);
     }
   };
 
