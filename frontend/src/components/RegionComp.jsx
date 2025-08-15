@@ -286,22 +286,57 @@ const RegionComp = () => {
     }
   };
 
-  // Format real API data for table display
+  // Format number with thousand separators
+  const formatNumber = (value, indicatorKey) => {
+    if (value === null || value === undefined || value === "N/A") return "N/A";
+
+    // If value is a string with extra text, clean it
+    if (typeof value === "string") {
+      // Extract numeric portion (supports decimals and commas/spaces)
+      const numericMatch = value.replace(/[^\d.,-]/g, "");
+      value = numericMatch.replace(",", "."); // normalize decimal separator
+    }
+
+    const num = parseFloat(value);
+    if (isNaN(num)) return value; // fallback to original if still not a number
+
+    // Format based on indicator type
+    switch (indicatorKey) {
+      case "unemploymentRate":
+      case "gdpPerCapita":
+      case "gdp":
+      case "averageSalary":
+      case "area":
+      case "population":
+      case "liveBirths":
+      case "deaths":
+      case "naturalIncrease":
+      case "employed":
+      case "employmentBusiness":
+      case "registeredEntities":
+      case "activeEntities":
+      case "newlyRegistered":
+      default:
+        return num.toLocaleString("en-US");
+    }
+  };
+
+  // Format real API data for table display (regions as rows, indicators as columns)
   const formatComparisonData = (allRegionsData) => {
     const data = [];
 
-    // Header row with region names
+    // Header row with indicator names
     const headerRow = [""];
-    selectedRegions.forEach((region) => {
-      headerRow.push(region.label);
+    selectedIndicators.forEach((indicator) => {
+      headerRow.push(indicator.label);
     });
     data.push(headerRow);
 
-    // Data rows for each selected indicator
-    selectedIndicators.forEach((indicator) => {
-      const row = [indicator.label];
+    // Data rows for each selected region
+    selectedRegions.forEach((region) => {
+      const row = [region.label];
 
-      selectedRegions.forEach((region) => {
+      selectedIndicators.forEach((indicator) => {
         // Find the region data, excluding the "Select All" option
         const regionData = allRegionsData.find(
           (item) => item.value === region.value && item.value !== "all"
@@ -312,7 +347,8 @@ const RegionComp = () => {
             regionData,
             indicator.key
           );
-          row.push(fieldValue || "N/A");
+          const formattedValue = formatNumber(fieldValue, indicator.key);
+          row.push(formattedValue);
         } else {
           row.push("N/A");
         }
@@ -522,26 +558,40 @@ const RegionComp = () => {
           <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-white/30 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full table-auto">
+                <thead>
+                  <tr>
+                    {comparisonData[0].map((cell, cellIndex) => (
+                      <th
+                        key={cellIndex}
+                        className={`px-4 py-3 font-semibold text-white bg-blue-950 border-b border-blue-900 ${
+                          cellIndex === 0
+                            ? "text-left sticky left-0 z-10 bg-blue-950"
+                            : "text-center min-w-[120px]"
+                        }`}
+                      >
+                        {cellIndex === 0 ? (
+                          <div>{cell}</div>
+                        ) : (
+                          <div className="text-xs leading-tight">{cell}</div>
+                        )}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
                 <tbody>
-                  {comparisonData.map((row, rowIndex) => (
+                  {comparisonData.slice(1).map((row, rowIndex) => (
                     <tr
                       key={rowIndex}
-                      className={
-                        rowIndex === 0
-                          ? ""
-                          : "hover:bg-gray-50/50 transition-colors duration-200"
-                      }
+                      className="hover:bg-gray-50/50 transition-colors duration-200"
                     >
                       {row.map((cell, cellIndex) => (
                         <td
                           key={cellIndex}
                           className={`px-4 py-3 border-b border-gray-200/50 ${
-                            rowIndex === 0
-                              ? "font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600"
-                              : cellIndex === 0
-                              ? "font-medium text-white bg-gradient-to-r from-pink-400 to-red-500"
-                              : "text-gray-600"
-                          } ${cellIndex === 0 ? "text-left" : "text-right"}`}
+                            cellIndex === 0
+                              ? "font-medium text-white bg-blue-800 text-left sticky left-0 z-10"
+                              : "text-gray-600 text-right"
+                          }`}
                         >
                           {cell}
                         </td>
@@ -560,7 +610,7 @@ const RegionComp = () => {
                   className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 
                            text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:shadow-xl 
                            transition-all duration-300 transform hover:scale-105 active:scale-95
-                           flex items-center gap-2"
+                           flex items-center gap-2 cursor-pointer"
                 >
                   <img src={excelIcon} alt="Excel" className="w-5 h-5" />
                   {t.download}
