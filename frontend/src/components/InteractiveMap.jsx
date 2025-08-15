@@ -83,7 +83,7 @@ const InteractiveMap = () => {
 
       const numericId = regionIdMap[id];
       if (numericId) {
-        const currentLanguage = isEnglish === "EN" ? "en" : "ge";
+        const currentLanguage = isEnglish ? "en" : "ge";
         navigate(`/${currentLanguage}/region/${numericId}`);
       }
     },
@@ -233,9 +233,9 @@ const InteractiveMap = () => {
               label.setAttribute("x", labelX);
               label.setAttribute("y", labelY);
               label.textContent =
-                isEnglish === "GE"
-                  ? regionData[id].nameGe
-                  : regionData[id].nameEn;
+                isEnglish
+                  ? regionData[id].nameEn
+                  : regionData[id].nameGe;
 
               path.parentNode.insertBefore(label, path.nextSibling);
 

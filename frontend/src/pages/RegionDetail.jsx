@@ -358,7 +358,7 @@ const RegionDetail = () => {
                 <div className="text-center py-20">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                   <p className="text-gray-600">
-                    {isEnglish === "EN"
+                    {isEnglish
                       ? "Loading map..."
                       : "იტვირთება რუკა..."}
                   </p>
@@ -392,12 +392,12 @@ const RegionDetail = () => {
                     />
                   </svg>
                   <p className="text-lg">
-                    {isEnglish === "EN"
+                    {isEnglish
                       ? "Detailed map not available"
                       : "დეტალური რუკა მიუწვდომელია"}
                   </p>
                   <p className="text-sm mt-2">
-                    {isEnglish === "EN"
+                    {isEnglish
                       ? "Region data is available in the sidebar"
                       : "რეგიონის მონაცემები ხელმისაწვდომია გვერდითი პანელში"}
                   </p>

@@ -46,7 +46,7 @@ const RegionStatistics = ({ regionCode }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const language = isEnglish === "EN" ? "en" : "ge";
+        const language = isEnglish ? "en" : "ge";
 
         // Fetch both APIs
         const [indicatorsResponse, regionsResponse] = await Promise.all([
@@ -105,10 +105,10 @@ const RegionStatistics = ({ regionCode }) => {
     return (
       <div className="w-1/5 rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-wide">
-          {isEnglish === "EN" ? "Key Indicators" : "ძირითადი მაჩვენებლები"}
+          {isEnglish ? "Key Indicators" : "ძირითადი მაჩვენებლები"}
         </h2>
         <div className="text-red-500 text-sm font-medium bg-red-50 p-3 rounded-lg">
-          {isEnglish === "EN"
+          {isEnglish
             ? "Error loading data"
             : "მონაცემების ჩატვირთვის შეცდომა"}
         </div>
@@ -120,7 +120,7 @@ const RegionStatistics = ({ regionCode }) => {
     <div className="w-1/4 rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/50 p-6">
       <h2 className="text-xl font-bold text-gray-900 mb-6 tracking-wide">
         {keyIndicators.find((item) => item.ID === 1)?.keyIndicators ||
-          (isEnglish === "EN" ? "Key Indicators" : "ძირითადი მაჩვენებლები")}
+          (isEnglish ? "Key Indicators" : "ძირითადი მაჩვენებლები")}
       </h2>
 
       <div className="space-y-1">
