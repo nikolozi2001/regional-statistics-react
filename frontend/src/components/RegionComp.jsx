@@ -24,8 +24,8 @@ const RegionComp = () => {
     ).filter(Boolean);
   }, [selectedRegionIds, regions]);
 
-  console.log(regions);
-  console.log(selectedIndicators);
+//   console.log(regions);
+//   console.log(selectedIndicators);
 
   // Translations
   const translations = {
