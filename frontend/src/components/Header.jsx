@@ -86,7 +86,8 @@ const Header = memo(
       location.pathname === "/ge/municipal-comparison";
 
     const handleLogoClick = () => {
-      navigate("/");
+      const currentLanguage = language === "EN" ? "en" : "ge";
+      navigate(`/${currentLanguage}`);
     };
 
     const toggleLanguage = () => {

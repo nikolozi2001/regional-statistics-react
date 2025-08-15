@@ -5,20 +5,39 @@ import { LanguageContext } from './LanguageContext';
 export const LanguageProvider = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [language, setLanguage] = useState('GE');
+  
+  // Initialize language from localStorage or default to 'GE'
+  const [language, setLanguage] = useState(() => {
+    const savedLanguage = localStorage.getItem('preferredLanguage');
+    return savedLanguage || 'GE';
+  });
 
   // Get language from URL
   useEffect(() => {
     const pathParts = location.pathname.split('/');
-    if (pathParts[1] === 'en') {
+    const urlLanguage = pathParts[1];
+    
+    if (urlLanguage === 'en') {
       setLanguage('EN');
-    } else {
+      localStorage.setItem('preferredLanguage', 'EN');
+    } else if (urlLanguage === 'ge') {
       setLanguage('GE');
+      localStorage.setItem('preferredLanguage', 'GE');
+    } else {
+      // If no language prefix or invalid prefix, try to preserve current language
+      // Only default to GE if this is the initial load
+      const hasLanguagePrefix = urlLanguage === 'en' || urlLanguage === 'ge';
+      if (!hasLanguagePrefix && location.pathname !== '/') {
+        // Redirect to current language version if path doesn't have language prefix
+        const currentLang = language === 'EN' ? 'en' : 'ge';
+        navigate(`/${currentLang}${location.pathname}`, { replace: true });
+      }
     }
-  }, [location]);
+  }, [location, navigate, language]);
 
   const changeLanguage = (newLanguage) => {
     setLanguage(newLanguage);
+    localStorage.setItem('preferredLanguage', newLanguage);
     
     // Update URL based on language
     const currentPath = location.pathname;

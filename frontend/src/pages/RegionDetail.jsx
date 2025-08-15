@@ -292,7 +292,14 @@ const RegionDetail = () => {
 
   // Handle back navigation
   const handleBackClick = () => {
-    navigate(-1);
+    // Try to go back in history first
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      // Fallback to home page with correct language
+      const currentLanguage = isEnglish ? "en" : "ge";
+      navigate(`/${currentLanguage}`);
+    }
   };
 
   if (!region) {
