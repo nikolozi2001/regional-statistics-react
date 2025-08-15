@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { Toaster } from 'react-hot-toast';
 import { LanguageProvider } from './contexts/LanguageContext.jsx';
 import Dashboard from './pages/Dashboard';
 import RegionDetail from './pages/RegionDetail';
@@ -30,6 +31,7 @@ function App() {
       <Router>
         <LanguageProvider>
           <div className="App">
+            <Toaster position="top-right" reverseOrder={false} />
             <Routes>
               {/* Default redirect to Georgian */}
               <Route path="/" element={<Navigate to="/ge" replace />} />

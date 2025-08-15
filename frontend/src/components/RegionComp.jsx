@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLanguage } from "../hooks/useLanguage";
 import Select from "react-select";
+import toast from "react-hot-toast";
 import ExcelJS from "exceljs";
 import geoMapsImage from "../assets/images/reg_photos/geomaps.png";
 import chartsImage from "../assets/images/reg_photos/1612523122750-Charts.jpg";
@@ -340,55 +341,66 @@ const RegionComp = () => {
   // Handle export to real Excel file
   const handleExport = async () => {
     if (!showTable || comparisonData.length === 0) {
-      alert(
+      toast.error(
         language === "EN" ? "No data to export" : "გასატანი მონაცემები არ არის"
       );
       return;
     }
 
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Comparison");
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Comparison");
 
-    // Add rows from comparisonData (already formatted for display)
-    comparisonData.forEach((row) => worksheet.addRow(row));
+      // Add rows
+      comparisonData.forEach((row) => worksheet.addRow(row));
 
-    // Style header row
-    worksheet.getRow(1).eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
-      cell.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "FF1E3A8A" },
-      }; // dark blue
-      cell.alignment = {
-        horizontal: "center",
-        vertical: "middle",
-        wrapText: true,
-      };
-    });
+      // Header styling
+      worksheet.getRow(1).eachCell((cell) => {
+        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF1E3A8A" }, // dark blue
+        };
+        cell.alignment = {
+          horizontal: "center",
+          vertical: "middle",
+          wrapText: true,
+        };
+      });
 
-    // Align first column left, others center/right
-    worksheet.columns.forEach((col, i) => {
-      col.width = 20; // default width
-      if (i === 0) {
-        col.alignment = { horizontal: "left" };
-      } else {
-        col.alignment = { horizontal: "center" };
-      }
-    });
+      // Column widths + alignment
+      worksheet.columns.forEach((col, i) => {
+        col.width = 20;
+        col.alignment =
+          i === 0 ? { horizontal: "left" } : { horizontal: "center" };
+      });
 
-    // Export as .xlsx
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
+      // Export as .xlsx
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
 
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.href = url;
-    link.download = "regional_comparison.xlsx";
-    link.click();
-    URL.revokeObjectURL(url);
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      link.href = url;
+      link.download = "regional_comparison.xlsx";
+      link.click();
+      URL.revokeObjectURL(url);
+
+      // ✅ Success toast
+      toast.success(
+        language === "EN"
+          ? "Excel exported successfully!"
+          : "Excel ფაილი წარმატებით იქნა ექსპორტირებული!"
+      );
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        language === "EN" ? "Export failed" : "ექსპორტი ვერ მოხერხდა"
+      );
+    }
   };
 
   // Custom styles for react-select
@@ -523,7 +535,7 @@ const RegionComp = () => {
                      text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:shadow-xl 
                      transition-all duration-300 transform hover:scale-105 active:scale-95
                      disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
-                     disabled:from-gray-400 disabled:to-gray-500"
+                     disabled:from-gray-400 disabled:to-gray-500 cursor-pointer"
           >
             {loading ? (
               <div className="flex items-center">
@@ -592,7 +604,7 @@ const RegionComp = () => {
                   onClick={handleExport}
                   className="bg-gray-900 hover:bg-black text-white font-medium py-2 px-6 
                      rounded-lg shadow-sm hover:shadow-md transition-all duration-200 
-                     flex items-center gap-2"
+                     flex items-center gap-2 cursor-pointer"
                 >
                   <img
                     src={excelIcon}
