@@ -105,7 +105,7 @@ const RegionComp = () => {
     ];
   }, [t, language]);
 
-  // Fetch regions data
+  // Fetch regions data from API
   useEffect(() => {
     const fetchRegions = async () => {
       try {
@@ -139,60 +139,13 @@ const RegionComp = () => {
         }
       } catch (error) {
         console.error("Error fetching regions:", error);
-        // Fallback data for demonstration
-        const fallbackRegions = [
-          { value: 1, label: language === "EN" ? "Tbilisi" : "თბილისი" },
-          { value: 2, label: language === "EN" ? "Adjara" : "აჭარა" },
-          { value: 3, label: language === "EN" ? "Guria" : "გურია" },
-          { value: 4, label: language === "EN" ? "Imereti" : "იმერეთი" },
-          { value: 5, label: language === "EN" ? "Kakheti" : "კახეთი" },
-          {
-            value: 6,
-            label: language === "EN" ? "Samtskhe-Javakheti" : "სამცხე-ჯავახეთი",
-          },
-          {
-            value: 7,
-            label: language === "EN" ? "Kvemo Kartli" : "ქვემო ქართლი",
-          },
-          {
-            value: 8,
-            label: language === "EN" ? "Shida Kartli" : "შიდა ქართლი",
-          },
-          {
-            value: 9,
-            label: language === "EN" ? "Mtskheta-Mtianeti" : "მცხეთა-მთიანეთი",
-          },
-          {
-            value: 10,
-            label:
-              language === "EN"
-                ? "Racha-Lechkhumi and Kvemo Svaneti"
-                : "რაჭა-ლეჩხუმი და ქვემო სვანეთი",
-          },
-          {
-            value: 11,
-            label:
-              language === "EN"
-                ? "Samegrelo-Zemo Svaneti"
-                : "სამეგრელო-ზემო სვანეთი",
-          },
-        ];
-
-        // Sort fallback regions alphabetically by label
-        const sortedFallbackRegions = fallbackRegions.sort((a, b) =>
-          a.label.localeCompare(b.label, language === "GE" ? "ka" : "en")
-        );
-
-        // Add "Select All" option at the beginning
-        const fallbackWithSelectAll = [
+        // Set empty regions array on error
+        setRegions([
           {
             value: "all",
             label: language === "EN" ? "Select All" : "ყველას არჩევა",
           },
-          ...sortedFallbackRegions,
-        ];
-
-        setRegions(fallbackWithSelectAll);
+        ]);
       }
     };
 
