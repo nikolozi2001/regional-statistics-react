@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLanguage } from "../hooks/useLanguage";
 import Select from "react-select";
+import ExcelJS from "exceljs";
 import geoMapsImage from "../assets/images/reg_photos/geomaps.png";
 import chartsImage from "../assets/images/reg_photos/1612523122750-Charts.jpg";
 import excelIcon from "../assets/excel.png";
@@ -336,8 +337,8 @@ const RegionComp = () => {
     return fieldName ? regionData[fieldName] : null;
   };
 
-  // Handle export to Excel
-  const handleExport = () => {
+  // Handle export to real Excel file
+  const handleExport = async () => {
     if (!showTable || comparisonData.length === 0) {
       alert(
         language === "EN" ? "No data to export" : "გასატანი მონაცემები არ არის"
@@ -345,20 +346,49 @@ const RegionComp = () => {
       return;
     }
 
-    // Create CSV content
-    const csvContent = comparisonData.map((row) => row.join(",")).join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Comparison");
 
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", "regional_comparison.csv");
-      link.style.visibility = "hidden";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    // Add rows from comparisonData (already formatted for display)
+    comparisonData.forEach((row) => worksheet.addRow(row));
+
+    // Style header row
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF1E3A8A" },
+      }; // dark blue
+      cell.alignment = {
+        horizontal: "center",
+        vertical: "middle",
+        wrapText: true,
+      };
+    });
+
+    // Align first column left, others center/right
+    worksheet.columns.forEach((col, i) => {
+      col.width = 20; // default width
+      if (i === 0) {
+        col.alignment = { horizontal: "left" };
+      } else {
+        col.alignment = { horizontal: "center" };
+      }
+    });
+
+    // Export as .xlsx
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = "regional_comparison.xlsx";
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   // Custom styles for react-select
@@ -508,25 +538,22 @@ const RegionComp = () => {
 
         {/* Comparison Table */}
         {showTable && comparisonData.length > 0 && (
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-white/30 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full table-auto">
-                <thead>
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div className="overflow-x-auto max-h-[75vh]">
+              <table className="w-full border-collapse text-sm">
+                <thead className="sticky top-0 z-20">
                   <tr>
                     {comparisonData[0].map((cell, cellIndex) => (
                       <th
                         key={cellIndex}
-                        className={`px-4 py-3 font-semibold text-white bg-blue-950 border-b border-blue-900 ${
-                          cellIndex === 0
-                            ? "text-left sticky left-0 z-10 bg-blue-950"
-                            : "text-center min-w-[120px]"
-                        }`}
+                        className={`px-4 py-3 font-semibold text-xs uppercase tracking-wide border-b border-gray-200 bg-gray-50
+                  ${
+                    cellIndex === 0
+                      ? "text-left sticky left-0 z-30 bg-gray-50 text-gray-700 whitespace-nowrap"
+                      : "text-center text-gray-600 min-w-[140px]"
+                  }`}
                       >
-                        {cellIndex === 0 ? (
-                          <div>{cell}</div>
-                        ) : (
-                          <div className="text-xs leading-tight">{cell}</div>
-                        )}
+                        {cell}
                       </th>
                     ))}
                   </tr>
@@ -535,16 +562,19 @@ const RegionComp = () => {
                   {comparisonData.slice(1).map((row, rowIndex) => (
                     <tr
                       key={rowIndex}
-                      className="hover:bg-gray-50/50 transition-colors duration-200"
+                      className={`transition-colors duration-200 ${
+                        rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
+                      } hover:bg-gray-100`}
                     >
                       {row.map((cell, cellIndex) => (
                         <td
                           key={cellIndex}
-                          className={`px-4 py-3 border-b border-gray-200/50 ${
-                            cellIndex === 0
-                              ? "font-medium text-white bg-blue-800 text-left sticky left-0 z-10"
-                              : "text-gray-600 text-right"
-                          }`}
+                          className={`px-4 py-3 border-b border-gray-100 
+                    ${
+                      cellIndex === 0
+                        ? "font-medium sticky left-0 z-10 bg-white text-gray-900 text-left whitespace-nowrap"
+                        : "text-gray-700 text-center"
+                    }`}
                         >
                           {cell}
                         </td>
@@ -556,16 +586,19 @@ const RegionComp = () => {
             </div>
 
             {/* Export Button */}
-            <div className="p-6 bg-gray-50/50 border-t border-gray-200/50">
+            <div className="p-6 border-t border-gray-100">
               <div className="flex justify-center">
                 <button
                   onClick={handleExport}
-                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 
-                           text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:shadow-xl 
-                           transition-all duration-300 transform hover:scale-105 active:scale-95
-                           flex items-center gap-2 cursor-pointer"
+                  className="bg-gray-900 hover:bg-black text-white font-medium py-2 px-6 
+                     rounded-lg shadow-sm hover:shadow-md transition-all duration-200 
+                     flex items-center gap-2"
                 >
-                  <img src={excelIcon} alt="Excel" className="w-5 h-5" />
+                  <img
+                    src={excelIcon}
+                    alt="Excel"
+                    className="w-5 h-5 opacity-80"
+                  />
                   {t.download}
                 </button>
               </div>
