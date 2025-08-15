@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
 import logoGeo from '../assets/images/logo_transparency_geo.png';
 import logoEng from '../assets/images/logo_transparency_eng.png';
@@ -53,6 +53,10 @@ const getTitleClasses = (language) => `
 const Header = memo(({ showBackButton = false, onBackClick = null, regionColor = "#6b7280", regionId = null }) => {
   const { language, changeLanguage } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check if we're on the main page
+  const isMainPage = location.pathname === '/' || location.pathname === '/en' ||  location.pathname === '/ge';
 
   const handleLogoClick = () => {
     navigate('/');
@@ -228,15 +232,17 @@ const Header = memo(({ showBackButton = false, onBackClick = null, regionColor =
             >
               {comparisonButtons.municipalities}
             </button>
-            <button 
-              className={getComparisonButtonClasses()}
-              style={{ backgroundColor: regionColor }}
-              onClick={handleGenderStatistics}
-              title={comparisonButtons.genderStats}
-              aria-label={comparisonButtons.genderStats}
-            >
-              {comparisonButtons.genderStats}
-            </button>
+            {!isMainPage && (
+              <button 
+                className={getComparisonButtonClasses()}
+                style={{ backgroundColor: regionColor }}
+                onClick={handleGenderStatistics}
+                title={comparisonButtons.genderStats}
+                aria-label={comparisonButtons.genderStats}
+              >
+                {comparisonButtons.genderStats}
+              </button>
+            )}
           </div>
         </div>
       </div>
