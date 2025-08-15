@@ -81,7 +81,9 @@ const Header = memo(
       location.pathname === "/en" ||
       location.pathname === "/ge" ||
       location.pathname === "/en/region-comparison" ||
-      location.pathname === "/ge/region-comparison";
+      location.pathname === "/ge/region-comparison" ||
+      location.pathname === "/en/municipal-comparison" ||
+      location.pathname === "/ge/municipal-comparison";
 
     const handleLogoClick = () => {
       navigate("/");
@@ -107,8 +109,8 @@ const Header = memo(
     };
 
     const handleMunicipalityComparison = () => {
-      // TODO: Implement municipality comparison functionality
-      console.log("Municipality comparison clicked");
+      const currentLanguage = language === "EN" ? "en" : "ge";
+      navigate(`/${currentLanguage}/municipal-comparison`);
     };
 
     const handleGenderStatistics = () => {

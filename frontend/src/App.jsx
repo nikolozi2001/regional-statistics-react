@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import RegionDetail from './pages/RegionDetail';
 import GenderStatistics from './pages/GenderStatistics';
 import RegionComp from './components/RegionComp';
+import MunicipalComp from './pages/MunicipalComp';
 import './App.css';
 
 const theme = createTheme({
@@ -53,7 +54,11 @@ function App() {
               {/* Region comparison routes */}
               <Route path="/ge/region-comparison" element={<RegionComp />} />
               <Route path="/en/region-comparison" element={<RegionComp />} />
-              
+
+              {/* Municipal comparison routes */}
+              <Route path="/ge/municipal-comparison" element={<MunicipalComp />} />
+              <Route path="/en/municipal-comparison" element={<MunicipalComp />} />
+
               {/* Catch all other routes and redirect to Georgian */}
               <Route path="*" element={<Navigate to="/ge" replace />} />
             </Routes>
