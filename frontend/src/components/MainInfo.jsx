@@ -130,12 +130,12 @@ const MainInfo = () => {
   }
 
   return (
-    <div className="h-full bg-gray-50 border-r border-gray-200 overflow-y-auto relative">
+    <div className="h-full bg-transparent overflow-y-auto relative">
       <div className="p-3 md:p-6 flex flex-col gap-3 md:gap-4">
         {mainInfoData.map((item) => (
           <div
             key={item.id}
-            className="flex items-center p-3 md:p-4 bg-white rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+            className="flex items-center p-3 md:p-4 bg-transparent rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
             id={`textbox${item.id}`}
             onMouseEnter={(e) => handleMouseEnter(item, e)}
             onMouseLeave={handleMouseLeave}

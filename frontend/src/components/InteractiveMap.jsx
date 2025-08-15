@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../hooks/useLanguage";
 import georgiaMap from "../assets/svg/georgia.svg";
-import backgroundIMG from "../assets/images/reg_photos/15.jpg";
 
 // Data configuration
 const regionData = {
@@ -71,7 +70,7 @@ const InteractiveMap = () => {
   const { isEnglish } = useLanguage();
   const navigate = useNavigate();
   const svgRef = useRef(null);
-  const [hoveredRegion, setHoveredRegion] = useState(null);
+  const [_hoveredRegion, setHoveredRegion] = useState(null);
   const [error, setError] = useState(null);
 
   // Function to handle region click - navigates to region detail page
@@ -81,7 +80,7 @@ const InteractiveMap = () => {
       if (id === "GE-AB" || id === "GE-TS") {
         return;
       }
-      
+
       const numericId = regionIdMap[id];
       if (numericId) {
         const currentLanguage = isEnglish === "EN" ? "en" : "ge";
@@ -264,7 +263,7 @@ const InteractiveMap = () => {
   }, [handleRegionClick, isEnglish]); // Added language dependency
 
   return (
-    <div className="h-full bg-white">
+    <div className="h-full bg-transparent">
       <div className="h-full p-2 md:p-4 lg:p-6">
         {error ? (
           <div className="h-full flex items-center justify-center bg-red-50 rounded-lg border-2 border-dashed border-red-300">
@@ -273,23 +272,7 @@ const InteractiveMap = () => {
             </p>
           </div>
         ) : (
-          <div 
-            className="h-full w-full relative bg-gray-50 rounded-lg border border-gray-200 overflow-hidden"
-            style={{
-              position: 'relative'
-            }}
-          >
-            {/* Background image with opacity */}
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `url(${backgroundIMG})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                opacity: 0.3,
-              }}
-            />
+          <div className="h-full w-full relative bg-transparent overflow-hidden">
             <div
               id="georgia-map-container"
               className="absolute inset-0 w-full h-full flex items-center justify-center p-4"
