@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../hooks/useLanguage";
 import georgiaMap from "../assets/svg/georgia.svg";
 
-// Data configuration
 const regionData = {
   "GE-AB": { nameEn: "Abkhazia", nameGe: "აფხაზეთი", color: "#7b818c" },
   "GE-TS": {
@@ -21,19 +20,15 @@ const regionData = {
   "GE-GU": { nameEn: "Guria", nameGe: "გურია", color: "#6ea76f" },
   "GE-IM": { nameEn: "Imereti", nameGe: "იმერეთი", color: "#c85861" },
   "GE-KA": { nameEn: "Kakheti", nameGe: "კახეთი", color: "#c85861" },
-  "GE-KK": {
-    nameEn: "Kvemo Kartli",
-    nameGe: "ქვემო ქართლი",
-    color: "#6ea76f",
-  },
+  "GE-KK": { nameEn: "Kvemo Kartli", nameGe: "ქვემო ქართლი", color: "#6ea76f" },
   "GE-MM": {
     nameEn: "Mtskheta-Mtianeti",
     nameGe: "მცხეთა-მთიანეთი",
     color: "#9e6e9c",
   },
   "GE-RL": {
-    nameEn: "Racha-Lechkhumi",
-    nameGe: "რაჭა-ლეჩხუმი",
+    nameEn: "Racha-Lechkhumi And Kvemo Svaneti",
+    nameGe: "რაჭა-ლეჩხუმი და ქვემო სვანეთი",
     color: "#ce8d34",
   },
   "GE-SJ": {
@@ -41,11 +36,7 @@ const regionData = {
     nameGe: "სამცხე-ჯავახეთი",
     color: "#9e6e9c",
   },
-  "GE-SK": {
-    nameEn: "Shida Kartli",
-    nameGe: "შიდა ქართლი",
-    color: "#678dac",
-  },
+  "GE-SK": { nameEn: "Shida Kartli", nameGe: "შიდა ქართლი", color: "#678dac" },
   "GE-SZ": {
     nameEn: "Samegrelo-Zemo Svaneti",
     nameGe: "სამეგრელო-ზემო სვანეთი",
@@ -55,7 +46,6 @@ const regionData = {
 };
 
 const regionIdMap = {
-  GE: "0",
   "GE-TB": "11",
   "GE-AJ": "15",
   "GE-GU": "23",
@@ -79,7 +69,6 @@ const InteractiveMap = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Memoize region data to prevent unnecessary recalculations
   const memoizedRegionData = useMemo(() => regionData, []);
 
   const handleRegionClick = useCallback(
@@ -100,18 +89,6 @@ const InteractiveMap = () => {
 
   const handleRegionLeave = useCallback(() => {
     setHoveredRegion(null);
-  }, []);
-
-  // Preload SVG to prevent flickering
-  useEffect(() => {
-    const preloadSvg = async () => {
-      try {
-        await fetch(georgiaMap);
-      } catch (err) {
-        console.error("Failed to preload SVG:", err);
-      }
-    };
-    preloadSvg();
   }, []);
 
   useEffect(() => {
@@ -146,7 +123,28 @@ const InteractiveMap = () => {
             );
           }
 
-          // Enhanced styles with better hover handling
+          // Create groups for proper layering
+          const pathsGroup = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "g"
+          );
+          pathsGroup.setAttribute("class", "map-paths");
+
+          const labelsGroup = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "g"
+          );
+          labelsGroup.setAttribute("class", "map-labels");
+
+          // Move all paths to paths group
+          const existingPaths = Array.from(svgElement.querySelectorAll("path"));
+          existingPaths.forEach((path) => pathsGroup.appendChild(path));
+
+          // Add groups to SVG (labels last to ensure they're on top)
+          svgElement.appendChild(pathsGroup);
+          svgElement.appendChild(labelsGroup);
+
+          // Add styles
           const style = document.createElement("style");
           style.textContent = `
             #georgia-map-container {
@@ -165,7 +163,7 @@ const InteractiveMap = () => {
               object-fit: contain;
             }
             
-            #georgia-map-container svg path {
+            #georgia-map-container svg .map-paths path {
               stroke: white;
               stroke-width: 0.8;
               cursor: pointer;
@@ -173,84 +171,75 @@ const InteractiveMap = () => {
               transition: all 0.2s ease;
               transform-origin: center;
               pointer-events: all;
-              vector-effect: non-scaling-stroke;
             }
             
-            #georgia-map-container svg path[id="GE-AB"],
-            #georgia-map-container svg path[id="GE-TS"] {
+            #georgia-map-container svg .map-paths path[id="GE-AB"],
+            #georgia-map-container svg .map-paths path[id="GE-TS"] {
               cursor: not-allowed;
               opacity: 0.6;
             }
             
-            #georgia-map-container svg path:hover,
-            #georgia-map-container svg path.highlighted {
+            #georgia-map-container svg .map-paths path:hover,
+            #georgia-map-container svg .map-paths path.highlighted {
               opacity: 1;
               stroke-width: 1.5;
               stroke: white;
               filter: brightness(1.1) saturate(1.3);
               transform: scale(1.005);
-              z-index: 10;
-              outline: none;
             }
             
-            #georgia-map-container svg .region-label {
+            /* Region labels - always on top */
+            #georgia-map-container svg .map-labels .region-label {
               font-family: 'FiraGO', sans-serif;
-              font-size: 12px;
+              font-size: 20px;
               font-weight: 600;
               fill: white;
               text-anchor: middle;
               pointer-events: none;
-              opacity: 0;
-              transition: opacity 0.2s ease;
-              text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+              opacity: 1;
+              transition: all 0.2s ease;
+              text-shadow: 
+                1px 1px 3px rgba(0, 0, 0, 0.8),
+                -1px -1px 3px rgba(0, 0, 0, 0.8);
               user-select: none;
             }
             
-            #georgia-map-container svg path:hover + .region-label,
-            #georgia-map-container svg path.highlighted + .region-label,
-            #georgia-map-container svg .region-label.visible {
-              opacity: 1;
-            }
-            
-            /* Touch device adjustments */
-            @media (hover: none) {
-              #georgia-map-container svg .region-label {
-                opacity: 1;
-                font-size: 10px;
-              }
+            /* Highlight labels on hover */
+            #georgia-map-container svg .map-paths path:hover ~ .map-labels .region-label[data-region="${"${id}"}"],
+            #georgia-map-container svg .map-paths path.highlighted ~ .map-labels .region-label[data-region="${"${id}"}"] {
+              font-weight: 700;
+              font-size: 13px;
+              filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
             }
             
             /* Responsive adjustments */
             @media (max-width: 768px) {
-              #georgia-map-container svg path {
-                stroke-width: 1;
+              #georgia-map-container svg .map-labels .region-label {
+                font-size: 10px;
               }
               
-              #georgia-map-container svg .region-label {
-                font-size: 10px;
+              #georgia-map-container svg .map-paths path:hover ~ .map-labels .region-label[data-region="${"${id}"}"],
+              #georgia-map-container svg .map-paths path.highlighted ~ .map-labels .region-label[data-region="${"${id}"}"] {
+                font-size: 11px;
               }
             }
             
             @media (max-width: 480px) {
-              #georgia-map-container svg .region-label {
+              #georgia-map-container svg .map-labels .region-label {
                 font-size: 8px;
+              }
+              
+              #georgia-map-container svg .map-paths path:hover ~ .map-labels .region-label[data-region="${"${id}"}"],
+              #georgia-map-container svg .map-paths path.highlighted ~ .map-labels .region-label[data-region="${"${id}"}"] {
+                font-size: 9px;
               }
             }
           `;
-
           svgElement.appendChild(style);
 
-          // Process all paths
-          const paths = Array.from(svgElement.querySelectorAll("path"));
+          // Process all paths and add labels
+          const paths = Array.from(pathsGroup.querySelectorAll("path"));
 
-          // Sort paths by area (smallest first)
-          paths.sort((a, b) => {
-            const aBox = a.getBBox();
-            const bBox = b.getBBox();
-            return aBox.width * aBox.height - bBox.width * bBox.height;
-          });
-
-          // Process each path
           paths.forEach((path) => {
             const id = path.getAttribute("id");
             if (id && memoizedRegionData[id]) {
@@ -263,66 +252,39 @@ const InteractiveMap = () => {
                 titles[0].remove();
               }
 
-              // Add accessible attributes
-              path.setAttribute(
-                "aria-label",
-                isEnglish
-                  ? memoizedRegionData[id].nameEn
-                  : memoizedRegionData[id].nameGe
-              );
-              path.setAttribute("role", "button");
-              path.setAttribute("tabindex", "0");
-
-              // Add region labels
+              // Calculate label position with adjustments
               const bbox = path.getBBox();
-              const labelX = bbox.x + bbox.width / 2;
-              const labelY = bbox.y + bbox.height / 2;
+              let labelX = bbox.x + bbox.width / 2;
+              let labelY = bbox.y + bbox.height / 2;
 
+              // Position adjustments for specific regions
+              if (id === "GE-TB") labelY += 8;
+              else if (id === "GE-AJ") {
+                labelX -= 10;
+                labelY += 5;
+              } else if (id === "GE-MM") labelY -= 8;
+              else if (id === "GE-SZ") labelX += 5;
+
+              // Create label
               const label = document.createElementNS(
                 "http://www.w3.org/2000/svg",
                 "text"
               );
               label.setAttribute("class", "region-label");
+              label.setAttribute("data-region", id);
               label.setAttribute("x", labelX);
               label.setAttribute("y", labelY);
               label.textContent = isEnglish
                 ? memoizedRegionData[id].nameEn
                 : memoizedRegionData[id].nameGe;
 
-              path.parentNode.insertBefore(label, path.nextSibling);
+              labelsGroup.appendChild(label);
 
               // Add event listeners
-              const handleClick = () => handleRegionClick(id);
-              const handleEnter = () => handleRegionHover(id);
-              const handleKeyDown = (e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  handleRegionClick(id);
-                  e.preventDefault();
-                }
-              };
-
-              path.addEventListener("click", handleClick);
-              path.addEventListener("mouseenter", handleEnter);
+              path.addEventListener("click", () => handleRegionClick(id));
+              path.addEventListener("mouseenter", () => handleRegionHover(id));
               path.addEventListener("mouseleave", handleRegionLeave);
-              path.addEventListener("focus", handleEnter);
-              path.addEventListener("blur", handleRegionLeave);
-              path.addEventListener("keydown", handleKeyDown);
-
-              // Cleanup function
-              return () => {
-                path.removeEventListener("click", handleClick);
-                path.removeEventListener("mouseenter", handleEnter);
-                path.removeEventListener("mouseleave", handleRegionLeave);
-                path.removeEventListener("focus", handleEnter);
-                path.removeEventListener("blur", handleRegionLeave);
-                path.removeEventListener("keydown", handleKeyDown);
-              };
             }
-          });
-
-          // Re-append paths in sorted order (smallest last = on top)
-          paths.forEach((path) => {
-            path.parentNode.appendChild(path);
           });
         }
       } catch (error) {
@@ -353,17 +315,23 @@ const InteractiveMap = () => {
   useEffect(() => {
     if (!svgRef.current || !hoveredRegion) return;
 
-    const paths = svgRef.current.querySelectorAll("path");
+    const svgElement = svgRef.current;
+    const paths = svgElement.querySelectorAll(".map-paths path");
+    const labels = svgElement.querySelectorAll(".map-labels .region-label");
+
     paths.forEach((path) => {
-      const id = path.getAttribute("id");
-      if (id === hoveredRegion) {
+      if (path.getAttribute("id") === hoveredRegion) {
         path.classList.add("highlighted");
-        const label = path.nextElementSibling;
-        if (label && label.classList.contains("region-label")) {
-          label.classList.add("visible");
-        }
       } else {
         path.classList.remove("highlighted");
+      }
+    });
+
+    labels.forEach((label) => {
+      if (label.getAttribute("data-region") === hoveredRegion) {
+        label.classList.add("highlighted");
+      } else {
+        label.classList.remove("highlighted");
       }
     });
   }, [hoveredRegion]);
