@@ -22,3 +22,18 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Excel files
+*.xlsx
+*.xls
+*.xlsm
+*.xlsb
+*.xltx
+*.xltm
+*.csv
+/src/assets/excels/
+*/excels/
+**/excels/
+**/excel/
+**/Excel/
+**/EXCEL/
