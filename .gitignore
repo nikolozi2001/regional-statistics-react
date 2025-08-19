@@ -54,3 +54,18 @@ temp/
 # Cache
 .cache/
 .parcel-cache/
+
+# Excel files
+*.xlsx
+*.xls
+*.xlsm
+*.xlsb
+*.xltx
+*.xltm
+*.csv
+/src/assets/excels/
+*/excels/
+**/excels/
+**/excel/
+**/Excel/
+**/EXCEL/
