@@ -63,7 +63,7 @@ temp/
 *.xltx
 *.xltm
 *.csv
-/src/assets/excels/
+public/excels
 */excels/
 **/excels/
 **/excel/
