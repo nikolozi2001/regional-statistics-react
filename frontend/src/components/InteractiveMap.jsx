@@ -258,12 +258,22 @@ const InteractiveMap = () => {
               let labelY = bbox.y + bbox.height / 2;
 
               // Position adjustments for specific regions
-              if (id === "GE-TB") labelY += 8;
+              // REGION-SPECIFIC POSITIONING
+              if (id === "GE-TB") labelY += 8; // Tbilisi
               else if (id === "GE-AJ") {
                 labelX -= 10;
                 labelY += 5;
-              } else if (id === "GE-MM") labelY -= 8;
-              else if (id === "GE-SZ") labelX += 5;
+              } // Adjara
+              else if (id === "GE-MM") labelY -= 8; // Mtskheta-Mtianeti
+              else if (id === "GE-SZ") {
+                // Adjusted position for Samegrelo-Zemo Svaneti
+                labelX += 15;
+                labelY -= 20;
+              } else if (id === "GE-RL") {
+                // Adjusted position for Racha-Lechkhumi
+                labelX -= 5;
+                labelY += 3;
+              }
 
               // Create label
               const label = document.createElementNS(
